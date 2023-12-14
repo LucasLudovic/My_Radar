@@ -23,6 +23,14 @@ typedef struct aircraft_s {
     int y_arrival;
     int speed;
     int delay;
+    struct aircraft_s *next;
 }aircraft_t;
 
+
+typedef struct tower_s {
+    int x_position;
+    int y_position;
+    int radius;
+    struct tower_s *next;
+} tower_t;
 #endif

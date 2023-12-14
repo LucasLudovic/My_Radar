@@ -16,5 +16,6 @@
     #define TOWER "Ressources/Tower.png"
     #define FAILURE 84
     #define SUCCESS 0
+    #define FRAME 60
 
 #endif

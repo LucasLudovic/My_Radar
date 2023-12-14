@@ -24,13 +24,6 @@ void switch_sprites(manager_t *manager)
 
 void check_events(manager_t *manager)
 {
-    static int already = 0;
-
-    if (already != 0) {
-        already = 0;
-        return;
-    }
-    already = 1;
     if (manager->event.type == sfEvtClosed)
         sfRenderWindow_close(manager->window);
     if (sfKeyboard_isKeyPressed(sfKeyL) == sfTrue)

@@ -29,5 +29,6 @@ int main(int argc, char **argv, char **env)
     file = open(argv[1], O_RDONLY);
     if (file <= 0)
         return display_error("Wrong file entered\n");
+    close(file);
     return my_radar(argv[1]);
 }
