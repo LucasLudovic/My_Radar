@@ -1,0 +1,20 @@
+/*
+** EPITECH PROJECT, 2023
+** my_macros
+** File description:
+** Macros for the my_radar project
+*/
+
+#ifndef MY_MACROS_H_
+    #define MY_MACROS_H_
+    #define UNUSED __attribute__((unused))
+    #define WIDTH 1980
+    #define HEIGHT 1080
+    #define BPP 32
+    #define TITLE "Radar"
+    #define PLANE "Ressources/Plane.png"
+    #define TOWER "Ressources/Tower.png"
+    #define FAILURE 84
+    #define SUCCESS 0
+
+#endif
