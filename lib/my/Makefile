@@ -38,7 +38,8 @@ SRC	=	my_find_prime_sup.c \
 		my_strdup.c \
 		my_swap.c \
 		my_nbr_to_str.c	\
-		display_error.c
+		display_error.c \
+		my_str_to_word_array.c
 
 OBJ	=	$(SRC:.c=.o)
 

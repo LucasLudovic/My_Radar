@@ -20,9 +20,40 @@ int add_single_tower(void)
 }
 
 static
-int add_single_plane(void)
+int add_to_plane(aircraft_t *aircraft, char **array, int plane_added)
 {
+    for (int i = 0; i < DATA_PLANE; i += 1)
+        if (array[i] == NULL)
+            return FAILURE;
+    if (array[DATA_PLANE] != NULL)
+        return FAILURE;
+    aircraft[plane_added].x_departure = my_getnbr(array[1]);
+    aircraft[plane_added].y_departure = my_getnbr(array[1]);
+    aircraft[plane_added].x_arrival = my_getnbr(array[1]);
+    aircraft[plane_added].y_arrival = my_getnbr(array[1]);
+    aircraft[plane_added].speed = my_getnbr(array[1]);
+    aircraft[plane_added].delay = my_getnbr(array[1]);
     return SUCCESS;
+}
+
+static
+int add_single_plane(manager_t *manager, aircraft_t *aircraft, char *buff)
+{
+    static int plane_added = 0;
+    char **array_of_words = NULL;
+    int return_value = SUCCESS;
+
+    printf("Plane added : %d\n", plane_added);
+    if (plane_added == manager->nb_planes)
+        return FAILURE;
+    if (buff == NULL || manager == NULL || aircraft == NULL)
+        return FAILURE;
+    array_of_words = my_str_to_word_array(buff);
+    if (array_of_words == NULL || *array_of_words == NULL)
+        return FAILURE;
+    return_value = add_to_plane(aircraft, array_of_words, plane_added);
+    plane_added += 1;
+    return return_value;
 }
 
 int allocate_memory(aircraft_t **aircraft, tower_t **tower,
@@ -54,14 +85,12 @@ int add_planes_towers(manager_t *manager, const char *path,
         return FAILURE;
     while (end_file > 0) {
         end_file = getline(&buff, &len_read, file);
-        if (end_file == 'A') {
-            add_single_plane();
-            continue;
-        }
-        if (end_file == 'T') {
+        if (end_file <= 0)
+            break;
+        if (buff[0] == 'A')
+            add_single_plane(manager, aircraft, buff);
+        if (buff[0] == 'T')
             add_single_tower();
-            continue;
-        }
     }
     if (buff != NULL)
         free(buff);

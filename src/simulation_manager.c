@@ -19,7 +19,8 @@
 #include "events.h"
 
 static
-int destroy_end(manager_t *sim_manager, int return_value)
+int destroy_end(manager_t *sim_manager, aircraft_t **aircraft,
+    tower_t **tower, int return_value)
 {
     if (sim_manager->window != NULL)
         sfRenderWindow_destroy(sim_manager->window);
@@ -27,6 +28,10 @@ int destroy_end(manager_t *sim_manager, int return_value)
         sfTexture_destroy(sim_manager->plane_texture);
     if (sim_manager->tower_texture != NULL)
         sfTexture_destroy(sim_manager->tower_texture);
+    if (tower != NULL && *tower != NULL)
+        free(*tower);
+    if (aircraft != NULL && *aircraft != NULL)
+        free(*aircraft);
     return return_value;
 }
 
@@ -88,5 +93,5 @@ int my_radar(const char *path)
         sfRenderWindow_setFramerateLimit(sim_manager.window, FRAME);
         return_value = simulation_loop(&sim_manager);
     }
-    return destroy_end(&sim_manager, return_value);
+    return destroy_end(&sim_manager, &aircraft, &tower, return_value);
 }
