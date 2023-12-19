@@ -18,5 +18,6 @@
     #define SUCCESS 0
     #define FRAME 60
     #define DATA_PLANE 7
+    #define DATA_TOWER 4
 
 #endif

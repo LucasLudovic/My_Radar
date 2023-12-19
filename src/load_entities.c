@@ -14,9 +14,36 @@
 #include "load_entities.h"
 
 static
-int add_single_tower(void)
+int add_to_tower(tower_t *tower, char **array, int tower_added)
 {
+    for (int i = 0; i < DATA_TOWER; i += 1)
+        if (array[i] == NULL)
+            return FAILURE;
+    if (array[DATA_TOWER] != NULL)
+        return FAILURE;
+    tower[tower_added].x_position = my_getnbr(array[1]);
+    tower[tower_added].y_position = my_getnbr(array[2]);
+    tower[tower_added].radius = my_getnbr(array[3]);
     return SUCCESS;
+}
+
+static
+int add_single_tower(manager_t *manager, tower_t *tower, char *buff)
+{
+    static int tower_added = 0;
+    char **array_of_words = NULL;
+    int return_value = SUCCESS;
+
+    if (buff == NULL || manager == NULL || tower == NULL)
+        return FAILURE;
+    if (tower_added == manager->nb_towers)
+        return FAILURE;
+    array_of_words = my_str_to_word_array(buff);
+    if (array_of_words == NULL || *array_of_words == NULL)
+        return FAILURE;
+    return_value = add_to_tower(tower, array_of_words, tower_added);
+    tower_added += 1;
+    return return_value;
 }
 
 static
@@ -43,10 +70,9 @@ int add_single_plane(manager_t *manager, aircraft_t *aircraft, char *buff)
     char **array_of_words = NULL;
     int return_value = SUCCESS;
 
-    printf("Plane added : %d\n", plane_added);
-    if (plane_added == manager->nb_planes)
-        return FAILURE;
     if (buff == NULL || manager == NULL || aircraft == NULL)
+        return FAILURE;
+    if (plane_added == manager->nb_planes)
         return FAILURE;
     array_of_words = my_str_to_word_array(buff);
     if (array_of_words == NULL || *array_of_words == NULL)
@@ -90,7 +116,7 @@ int add_planes_towers(manager_t *manager, const char *path,
         if (buff[0] == 'A')
             add_single_plane(manager, aircraft, buff);
         if (buff[0] == 'T')
-            add_single_tower();
+            add_single_tower(manager, tower, buff);
     }
     if (buff != NULL)
         free(buff);
