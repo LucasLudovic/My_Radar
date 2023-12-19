@@ -37,6 +37,8 @@ int initialize_manager(manager_t *sim_manager)
     sim_manager->window = sfRenderWindow_create(mode, TITLE, sfClose, NULL);
     sim_manager->tower_texture = sfTexture_createFromFile(TOWER, NULL);
     sim_manager->plane_texture = sfTexture_createFromFile(PLANE, NULL);
+    sim_manager->nb_planes = 0;
+    sim_manager->nb_towers = 0;
     if (sim_manager->window == NULL ||
         sim_manager->tower_texture == NULL ||
         sim_manager->plane_texture == NULL)
@@ -68,37 +70,94 @@ int simulation_loop(manager_t *manager)
     return SUCCESS;
 }
 
-int load_value(aircraft_t *aircraft, tower_t *tower, char *path)
+static
+int check_nb_assets(manager_t *manager, char *buff, FILE *file)
 {
-    int file = open(path, O_RDONLY);
-    struct stat file_stats = {0};
-    size_t file_size = 0;
+    ssize_t end_file = 1;
+    size_t len_read = 0;
+
+    while (end_file > 0) {
+        end_file = getline(&buff, &len_read, file);
+        if (end_file <= 0)
+            break;
+        if (buff[0] == 'A')
+            manager->nb_planes += 1;
+        if (buff[0] == 'T')
+            manager->nb_towers += 1;
+        if (buff[0] != 'A' && buff[0] != 'T')
+            return FAILURE;
+    }
+}
+
+static
+int allocate_memory(aircraft_t **aircraft, tower_t **tower,
+    const char *path, manager_t *manager)
+{
+    FILE *file = fopen(path, "r");
     char *buff = NULL;
 
-    lstat(path, &file_stats);
-    file_size = file_stats.st_size;
-    buff = (char *)malloc(sizeof(char) * file_size + 1);
-    if (buff == NULL)
+    if (file == NULL || aircraft == NULL || tower == NULL)
         return FAILURE;
-    read(file, buff, file_size);
-    buff[file_size] = '\0';
-    my_putstr(buff);
-    free(buff);
-    close(file);
+    check_nb_assets(manager, buff, file);
+    *aircraft = malloc(sizeof(aircraft_t) * manager->nb_planes);
+    *tower = malloc(sizeof(tower_t) * manager->nb_towers);
+    if (buff != NULL)
+        free(buff);
+    fclose(file);
     return SUCCESS;
 }
 
-int my_radar(char *path)
+static
+int add_single_tower(void)
+{
+    return SUCCESS;
+}
+
+static
+int add_single_plane(void)
+{
+    return SUCCESS;
+}
+
+static
+int add_planes_towers(manager_t *manager, const char *path,
+    aircraft_t *aircraft, tower_t *tower)
+{
+    FILE *file = fopen(path, "r");
+    char *buff = NULL;
+    size_t len_read = 0;
+    ssize_t end_file = 1;
+
+    if (file == NULL || aircraft == NULL || tower == NULL)
+        return FAILURE;
+    while (end_file > 0) {
+        end_file = getline(&buff, &len_read, file);
+        if (end_file == 'A') {
+            add_single_plane();
+            continue;
+        }
+        if (end_file == 'T') {
+            add_single_tower();
+            continue;
+        }
+    }
+    if (buff != NULL)
+        free(buff);
+}
+
+int my_radar(const char *path)
 {
     int return_value = SUCCESS;
     manager_t sim_manager = { .window = NULL, .plane_texture = NULL,
-        .tower_texture = NULL };
+        .tower_texture = NULL, .nb_planes = 0, .nb_towers = 0 };
     aircraft_t *aircraft = NULL;
     tower_t *tower = NULL;
 
-    return_value = load_value(aircraft, tower, path);
+    return_value = initialize_manager(&sim_manager);
     if (return_value != FAILURE)
-        return_value = initialize_manager(&sim_manager);
+        return_value = allocate_memory(&aircraft, &tower, path, &sim_manager);
+    if (return_value != FAILURE)
+        return_value = add_planes_towers(&sim_manager, path, aircraft, tower);
     if (return_value != FAILURE) {
         sfRenderWindow_setFramerateLimit(sim_manager.window, FRAME);
         return_value = simulation_loop(&sim_manager);

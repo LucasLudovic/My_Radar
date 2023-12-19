@@ -14,6 +14,8 @@ typedef struct manager_s {
     sfTexture *plane_texture;
     sfTexture *tower_texture;
     sfEvent event;
+    int nb_planes;
+    int nb_towers;
 } manager_t;
 
 typedef struct aircraft_s {
@@ -25,7 +27,6 @@ typedef struct aircraft_s {
     int delay;
     struct aircraft_s *next;
 }aircraft_t;
-
 
 typedef struct tower_s {
     int x_position;
