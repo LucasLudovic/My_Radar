@@ -13,7 +13,11 @@ typedef struct manager_s {
     sfRenderWindow *window;
     sfTexture *plane_texture;
     sfTexture *tower_texture;
+    sfSprite *plane_sprite;
+    sfSprite *tower_sprite;
     sfEvent event;
+    int display_area;
+    int display_sprite;
     int nb_planes;
     int nb_towers;
 } manager_t;

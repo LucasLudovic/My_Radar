@@ -26,8 +26,10 @@ void check_events(manager_t *manager)
 {
     if (manager->event.type == sfEvtClosed)
         sfRenderWindow_close(manager->window);
-    if (sfKeyboard_isKeyPressed(sfKeyL) == sfTrue)
-        switch_hitboxes_and_area(manager);
-    if (sfKeyboard_isKeyPressed(sfKeyS) == sfTrue)
-        switch_sprites(manager);
+    if (manager->event.type == sfEvtKeyReleased) {
+        if (manager->event.key.code == sfKeyL)
+            switch_hitboxes_and_area(manager);
+        if (manager->event.key.code == sfKeyS)
+            switch_sprites(manager);
+    }
 }
