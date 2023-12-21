@@ -8,6 +8,6 @@
 #ifndef SIMULATION_MANAGER_H_
     #define SIMULATION_MANAGER_H_
 
-int my_radar(char *path);
+int my_radar(const char *path);
 
 #endif

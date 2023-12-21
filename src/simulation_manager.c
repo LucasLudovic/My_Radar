@@ -14,6 +14,8 @@
 #include "my_structs.h"
 #include "events.h"
 #include "display.h"
+#include "simulation_manager.h"
+#include "plane_manager.h"
 
 static
 int destroy_end(manager_t *sim_manager, aircraft_t **aircraft,
@@ -84,11 +86,12 @@ int initialize_manager(manager_t *sim_manager)
 static
 void simulate(manager_t *manager, aircraft_t *aircraft, tower_t *tower)
 {
-    sfVector2f plane_position = { .x = 100, .y = 100 };
-    sfVector2f tower_position = { .x = 100, .y = 100 };
+    sfVector2f plane_position = { .x = 0, .y = 0 };
+    sfVector2f tower_position = { .x = 0, .y = 0 };
 
     display_background(manager);
     for (int i = 0; i < manager->nb_planes; i += 1) {
+        move_plane(aircraft);
         plane_position.x = (float)aircraft[i].x_departure;
         plane_position.y = (float)aircraft[i].y_departure;
         sfSprite_setPosition(manager->plane_sprite, plane_position);
