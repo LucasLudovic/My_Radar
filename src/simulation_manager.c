@@ -16,6 +16,7 @@
 #include "display.h"
 #include "simulation_manager.h"
 #include "plane_manager.h"
+#include "tower_manager.h"
 
 static
 int destroy_end(manager_t *sim_manager, aircraft_t **aircraft,
@@ -86,25 +87,12 @@ int initialize_manager(manager_t *sim_manager)
 static
 void simulate(manager_t *manager, aircraft_t *aircraft, tower_t *tower)
 {
-    sfVector2f plane_position = { .x = 0, .y = 0 };
     sfVector2f tower_position = { .x = 0, .y = 0 };
 
+    sfRenderWindow_clear(manager->window, sfBlack);
     display_background(manager);
-    for (int i = 0; i < manager->nb_planes; i += 1) {
-        move_plane(aircraft);
-        plane_position.x = (float)aircraft[i].x_departure;
-        plane_position.y = (float)aircraft[i].y_departure;
-        sfSprite_setPosition(manager->plane_sprite, plane_position);
-        sfRenderWindow_drawSprite(manager->window,
-            manager->plane_sprite, NULL);
-    }
-    for (int i = 0; i < manager->nb_towers; i += 1) {
-        tower_position.x = (float)tower[i].x_position;
-        tower_position.y = (float)tower[i].y_position;
-        sfSprite_setPosition(manager->tower_sprite, tower_position);
-        sfRenderWindow_drawSprite(manager->window,
-            manager->tower_sprite, NULL);
-    }
+    display_plane(manager, aircraft);
+    display_tower(manager, tower);
     sfRenderWindow_display(manager->window);
 }
 
@@ -138,7 +126,7 @@ int my_radar(const char *path)
     manager_t sim_manager = { .window = NULL, .plane_texture = NULL,
         .tower_texture = NULL, .plane_sprite = NULL, .tower_sprite = NULL,
         .background_texture = NULL, .background_sprite = NULL, .nb_planes = 0,
-        .nb_towers = 0, .display_area = 1, .display_sprite = 1 };
+        .nb_towers = 0, .display_area = 1, .display_sprite = 1};
     aircraft_t *aircraft = NULL;
     tower_t *tower = NULL;
 

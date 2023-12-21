@@ -11,5 +11,6 @@
     #include "my_macros.h"
 
 int move_plane(aircraft_t *aircraft);
+void display_plane(manager_t *manager, aircraft_t *aircraft);
 
 #endif

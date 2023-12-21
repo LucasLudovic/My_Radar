@@ -56,10 +56,13 @@ int add_to_plane(aircraft_t *aircraft, char **array, int plane_added)
         return FAILURE;
     aircraft[plane_added].x_departure = my_getnbr(array[1]);
     aircraft[plane_added].y_departure = my_getnbr(array[2]);
+    aircraft[plane_added].x_current = aircraft[plane_added].x_departure;
+    aircraft[plane_added].y_current = aircraft[plane_added].y_departure;
     aircraft[plane_added].x_arrival = my_getnbr(array[3]);
     aircraft[plane_added].y_arrival = my_getnbr(array[4]);
     aircraft[plane_added].speed = my_getnbr(array[5]);
     aircraft[plane_added].delay = my_getnbr(array[6]);
+    aircraft[plane_added].arrived = 0;
     if (aircraft[plane_added].x_departure > WIDTH ||
         aircraft[plane_added].x_arrival > WIDTH ||
         aircraft[plane_added].y_departure > HEIGHT ||
