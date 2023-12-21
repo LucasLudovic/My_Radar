@@ -13,6 +13,7 @@
 #include "my_macros.h"
 #include "my_structs.h"
 #include "events.h"
+#include "display.h"
 
 static
 int destroy_end(manager_t *sim_manager, aircraft_t **aircraft,
@@ -28,11 +29,35 @@ int destroy_end(manager_t *sim_manager, aircraft_t **aircraft,
         sfSprite_destroy(sim_manager->plane_sprite);
     if (sim_manager->tower_sprite != NULL)
         sfSprite_destroy(sim_manager->tower_sprite);
+    if (sim_manager->background_texture != NULL)
+        sfTexture_destroy(sim_manager->background_texture);
+    if (sim_manager->background_sprite != NULL)
+        sfSprite_destroy(sim_manager->background_sprite);
     if (tower != NULL && *tower != NULL)
         free(*tower);
     if (aircraft != NULL && *aircraft != NULL)
         free(*aircraft);
     return return_value;
+}
+
+static
+int load_sprite(manager_t *sim_manager)
+{
+    if (sim_manager->plane_sprite == NULL)
+        return FAILURE;
+    sfSprite_setTexture(sim_manager->plane_sprite, sim_manager->plane_texture,
+                        sfTrue);
+    sfSprite_setScale(sim_manager->plane_sprite, (sfVector2f){0.1, 0.1});
+    if (sim_manager->background_sprite == NULL)
+        return FAILURE;
+    sfSprite_setTexture(sim_manager->background_sprite,
+                        sim_manager->background_texture, sfTrue);
+    if (sim_manager->tower_sprite == NULL)
+        return FAILURE;
+    sfSprite_setTexture(sim_manager->tower_sprite, sim_manager->tower_texture,
+                        sfTrue);
+    sfSprite_setScale(sim_manager->tower_sprite, (sfVector2f){0.1, 0.1});
+    return SUCCESS;
 }
 
 static
@@ -45,28 +70,37 @@ int initialize_manager(manager_t *sim_manager)
     sim_manager->nb_towers = 0;
     sim_manager->plane_texture = sfTexture_createFromFile(PLANE, NULL);
     sim_manager->tower_texture = sfTexture_createFromFile(TOWER, NULL);
+    sim_manager->background_texture = sfTexture_createFromFile(BACK, NULL);
     sim_manager->plane_sprite = sfSprite_create();
     sim_manager->tower_sprite = sfSprite_create();
+    sim_manager->background_sprite = sfSprite_create();
     if (sim_manager->window == NULL || sim_manager->tower_texture == NULL ||
-        sim_manager->plane_texture == NULL)
+        sim_manager->plane_texture == NULL ||
+        sim_manager->background_texture == NULL)
         return display_error("Failed to load the assets\n");
-    sfSprite_setTexture(sim_manager->plane_sprite, sim_manager->plane_texture,
-    sfTrue);
-    sfSprite_setScale(sim_manager->plane_sprite, (sfVector2f){0.1, 0.1});
-    return SUCCESS;
+    return load_sprite(sim_manager);
 }
 
 static
 void simulate(manager_t *manager, aircraft_t *aircraft, tower_t *tower)
 {
     sfVector2f plane_position = { .x = 100, .y = 100 };
+    sfVector2f tower_position = { .x = 100, .y = 100 };
 
+    display_background(manager);
     for (int i = 0; i < manager->nb_planes; i += 1) {
         plane_position.x = (float)aircraft[i].x_departure;
         plane_position.y = (float)aircraft[i].y_departure;
         sfSprite_setPosition(manager->plane_sprite, plane_position);
         sfRenderWindow_drawSprite(manager->window,
             manager->plane_sprite, NULL);
+    }
+    for (int i = 0; i < manager->nb_towers; i += 1) {
+        tower_position.x = (float)tower[i].x_position;
+        tower_position.y = (float)tower[i].y_position;
+        sfSprite_setPosition(manager->tower_sprite, tower_position);
+        sfRenderWindow_drawSprite(manager->window,
+            manager->tower_sprite, NULL);
     }
     sfRenderWindow_display(manager->window);
 }
@@ -100,7 +134,8 @@ int my_radar(const char *path)
     int return_value = SUCCESS;
     manager_t sim_manager = { .window = NULL, .plane_texture = NULL,
         .tower_texture = NULL, .plane_sprite = NULL, .tower_sprite = NULL,
-        .nb_planes = 0, .nb_towers = 0, .display_area = 1, .display_sprite = 1 };
+        .background_texture = NULL, .background_sprite = NULL, .nb_planes = 0,
+        .nb_towers = 0, .display_area = 1, .display_sprite = 1 };
     aircraft_t *aircraft = NULL;
     tower_t *tower = NULL;
 

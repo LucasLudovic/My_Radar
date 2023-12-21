@@ -14,6 +14,7 @@
     #define TITLE "Radar"
     #define PLANE "Ressources/Plane.png"
     #define TOWER "Ressources/Tower.png"
+    #define BACK "Ressources/Background.jpg"
     #define FAILURE 84
     #define SUCCESS 0
     #define FRAME 60
