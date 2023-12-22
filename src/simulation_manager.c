@@ -19,6 +19,16 @@
 #include "tower_manager.h"
 
 static
+int free_array(aircraft_t **aircraft, tower_t **tower, int return_value)
+{
+    if (tower != NULL && *tower != NULL)
+        free(*tower);
+    if (aircraft != NULL && *aircraft != NULL)
+        free(*aircraft);
+    return return_value;
+}
+
+static
 int destroy_end(manager_t *sim_manager, aircraft_t **aircraft,
     tower_t **tower, int return_value)
 {
@@ -36,11 +46,11 @@ int destroy_end(manager_t *sim_manager, aircraft_t **aircraft,
         sfTexture_destroy(sim_manager->background_texture);
     if (sim_manager->background_sprite != NULL)
         sfSprite_destroy(sim_manager->background_sprite);
-    if (tower != NULL && *tower != NULL)
-        free(*tower);
-    if (aircraft != NULL && *aircraft != NULL)
-        free(*aircraft);
-    return return_value;
+    if (sim_manager->hitbox != NULL)
+        sfRectangleShape_destroy(sim_manager->hitbox);
+    if (sim_manager->tower_radius != NULL)
+        sfCircleShape_destroy(sim_manager->tower_radius);
+    return free_array(aircraft, tower, return_value);
 }
 
 static
