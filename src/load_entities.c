@@ -24,6 +24,8 @@ int add_to_tower(tower_t *tower, char **array, int tower_added)
     tower[tower_added].x_position = my_getnbr(array[1]);
     tower[tower_added].y_position = my_getnbr(array[2]);
     tower[tower_added].radius = my_getnbr(array[3]);
+    tower[tower_added].radius *= WIDTH;
+    tower[tower_added].radius /= 100;
     return SUCCESS;
 }
 

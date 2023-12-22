@@ -21,7 +21,7 @@
     #define DATA_PLANE 7
     #define DATA_TOWER 4
     #define HALF_SPRITE 10
-    #define RECT 20
-    #define THICKNESS 1
-    #define SCALE 0.07
+    #define RECT 20.f
+    #define THICKNESS 3.f
+    #define SCALE 0.07f
 #endif

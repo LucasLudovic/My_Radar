@@ -70,6 +70,9 @@ void init_shape(manager_t *sim_manager)
     sfRectangleShape_setFillColor(sim_manager->hitbox, sfTransparent);
     sfRectangleShape_setOutlineThickness(sim_manager->hitbox, THICKNESS);
     sfRectangleShape_setOutlineColor(sim_manager->hitbox, sfGreen);
+    sfCircleShape_setFillColor(sim_manager->tower_radius, sfTransparent);
+    sfCircleShape_setOutlineThickness(sim_manager->tower_radius, THICKNESS);
+    sfCircleShape_setOutlineColor(sim_manager->tower_radius, sfGreen);
 }
 
 static
@@ -87,6 +90,7 @@ int initialize_manager(manager_t *sim_manager)
     sim_manager->tower_sprite = sfSprite_create();
     sim_manager->background_sprite = sfSprite_create();
     sim_manager->hitbox = sfRectangleShape_create();
+    sim_manager->tower_radius = sfCircleShape_create();
     if (sim_manager->window == NULL || sim_manager->tower_texture == NULL ||
         sim_manager->plane_texture == NULL || sim_manager->hitbox == NULL ||
         sim_manager->background_texture == NULL)
@@ -135,7 +139,7 @@ int my_radar(const char *path)
     manager_t sim_manager = { .window = NULL, .plane_texture = NULL,
         .tower_texture = NULL, .plane_sprite = NULL, .tower_sprite = NULL,
         .background_texture = NULL, .background_sprite = NULL, .hitbox = NULL,
-        .display_area = 1, .display_sprite = 1};
+        .tower_radius = NULL, .display_area = 1, .display_sprite = 1};
     aircraft_t *aircraft = NULL;
     tower_t *tower = NULL;
 
