@@ -112,7 +112,6 @@ void simulate(manager_t *manager, aircraft_t *aircraft, tower_t *tower)
 static
 int simulation_loop(manager_t *manager, aircraft_t *aircraft, tower_t *tower)
 {
-    int loop = sfTrue;
     sfClock *clock = sfClock_create();
     sfTime time;
 

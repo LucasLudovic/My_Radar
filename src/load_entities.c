@@ -130,6 +130,7 @@ int add_planes_towers(manager_t *manager, const char *path,
     }
     if (buff != NULL)
         free(buff);
+    return SUCCESS;
 }
 
 int check_nb_assets(manager_t *manager, char *buff, FILE *file)

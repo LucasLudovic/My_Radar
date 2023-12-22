@@ -24,7 +24,7 @@ void display_area(manager_t *manager, tower_t *tower, int i,
 }
 
 static
-void display_single_tower(manager_t *manager, tower_t *tower)
+void display_single_tower(manager_t *manager)
 {
     if (manager->display_sprite == 1) {
         sfRenderWindow_drawSprite(manager->window,
@@ -47,6 +47,6 @@ void display_tower(manager_t *manager, tower_t *tower)
         tower_position.x -= (float)tower[i].radius;
         tower_position.y -= (float)tower[i].radius;
         display_area(manager, tower, i, tower_position);
-        display_single_tower(manager, tower);
+        display_single_tower(manager);
     }
 }

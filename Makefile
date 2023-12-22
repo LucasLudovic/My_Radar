@@ -18,6 +18,7 @@ CFLAGS	+=	-lcsfml-graphics
 CFLAGS	+=	-lcsfml-audio
 CFLAGS	+=	-lcsfml-window
 CFLAGS	+=	-lcsfml-system
+CFLAGS	+=	-W -Wall -Wextra -Wpedantic
 
 LIB	=	-L lib/my -lmy
 
