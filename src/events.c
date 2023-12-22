@@ -13,7 +13,7 @@
 static
 void switch_hitboxes_and_area(manager_t *manager)
 {
-    my_putstr("L\n");
+    manager->display_area = (manager->display_area == 0) ? 1 : 0;
 }
 
 static
