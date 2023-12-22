@@ -17,6 +17,7 @@ typedef struct manager_s {
     sfSprite *plane_sprite;
     sfSprite *tower_sprite;
     sfSprite *background_sprite;
+    sfRectangleShape *hitbox;
     sfEvent event;
     int display_area;
     int display_sprite;

@@ -70,9 +70,11 @@ void display_plane(manager_t *manager, aircraft_t *aircraft)
         plane_position.x = (float)aircraft[i].x_current;
         plane_position.y = (float)aircraft[i].y_current;
         sfSprite_setPosition(manager->plane_sprite, plane_position);
-        plane_position.x += HALF_SPRITE;
-        plane_position.y += HALF_SPRITE;
-        sfSprite_setOrigin(manager->plane_sprite, plane_position);
+        if (manager->display_area == 1 && aircraft[i].arrived != 1) {
+            sfRectangleShape_setPosition(manager->hitbox, plane_position);
+            sfRenderWindow_drawRectangleShape(manager->window, manager->hitbox,
+                NULL);
+        }
         if (manager->display_sprite == 1 && aircraft[i].arrived != 1) {
             sfRenderWindow_drawSprite(manager->window,
                 manager->plane_sprite, NULL);

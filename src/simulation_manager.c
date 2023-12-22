@@ -50,7 +50,7 @@ int load_sprite(manager_t *sim_manager)
         return FAILURE;
     sfSprite_setTexture(sim_manager->plane_sprite, sim_manager->plane_texture,
                         sfTrue);
-    sfSprite_setScale(sim_manager->plane_sprite, (sfVector2f){0.1, 0.1});
+    sfSprite_setScale(sim_manager->plane_sprite, (sfVector2f){SCALE, SCALE});
     if (sim_manager->background_sprite == NULL)
         return FAILURE;
     sfSprite_setTexture(sim_manager->background_sprite,
@@ -59,8 +59,17 @@ int load_sprite(manager_t *sim_manager)
         return FAILURE;
     sfSprite_setTexture(sim_manager->tower_sprite, sim_manager->tower_texture,
                         sfTrue);
-    sfSprite_setScale(sim_manager->tower_sprite, (sfVector2f){0.1, 0.1});
+    sfSprite_setScale(sim_manager->tower_sprite, (sfVector2f){SCALE, SCALE});
     return SUCCESS;
+}
+
+static
+void init_shape(manager_t *sim_manager)
+{
+    sfRectangleShape_setSize(sim_manager->hitbox, (sfVector2f){RECT, RECT});
+    sfRectangleShape_setFillColor(sim_manager->hitbox, sfTransparent);
+    sfRectangleShape_setOutlineThickness(sim_manager->hitbox, THICKNESS);
+    sfRectangleShape_setOutlineColor(sim_manager->hitbox, sfGreen);
 }
 
 static
@@ -77,10 +86,12 @@ int initialize_manager(manager_t *sim_manager)
     sim_manager->plane_sprite = sfSprite_create();
     sim_manager->tower_sprite = sfSprite_create();
     sim_manager->background_sprite = sfSprite_create();
+    sim_manager->hitbox = sfRectangleShape_create();
     if (sim_manager->window == NULL || sim_manager->tower_texture == NULL ||
-        sim_manager->plane_texture == NULL ||
+        sim_manager->plane_texture == NULL || sim_manager->hitbox == NULL ||
         sim_manager->background_texture == NULL)
         return display_error("Failed to load the assets\n");
+    init_shape(sim_manager);
     return load_sprite(sim_manager);
 }
 
@@ -123,8 +134,8 @@ int my_radar(const char *path)
     int return_value = SUCCESS;
     manager_t sim_manager = { .window = NULL, .plane_texture = NULL,
         .tower_texture = NULL, .plane_sprite = NULL, .tower_sprite = NULL,
-        .background_texture = NULL, .background_sprite = NULL, .nb_planes = 0,
-        .nb_towers = 0, .display_area = 1, .display_sprite = 1};
+        .background_texture = NULL, .background_sprite = NULL, .hitbox = NULL,
+        .display_area = 1, .display_sprite = 1};
     aircraft_t *aircraft = NULL;
     tower_t *tower = NULL;
 
