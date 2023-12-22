@@ -27,20 +27,20 @@ typedef struct manager_s {
 } manager_t;
 
 typedef struct aircraft_s {
-    int x_departure;
-    int y_departure;
-    int x_current;
-    int y_current;
-    int x_arrival;
-    int y_arrival;
-    int speed;
-    int delay;
+    float x_departure;
+    float y_departure;
+    float x_current;
+    float y_current;
+    float x_arrival;
+    float y_arrival;
+    float speed;
+    float delay;
     int arrived;
 }aircraft_t;
 
 typedef struct tower_s {
-    int x_position;
-    int y_position;
-    int radius;
+    float x_position;
+    float y_position;
+    float radius;
 } tower_t;
 #endif

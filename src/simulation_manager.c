@@ -122,7 +122,7 @@ int simulation_loop(manager_t *manager, aircraft_t *aircraft, tower_t *tower)
         time = sfClock_getElapsedTime(clock);
         if (sfRenderWindow_pollEvent(manager->window, &(manager->event)))
             check_events(manager);
-        if (sfTime_asMilliseconds(time) >= 20) {
+        if (sfTime_asMilliseconds(time) >= TIME_FRAME_MS) {
             simulate(manager, aircraft, tower);
             sfClock_restart(clock);
         }
@@ -138,7 +138,7 @@ int my_radar(const char *path)
     manager_t sim_manager = { .window = NULL, .plane_texture = NULL,
         .tower_texture = NULL, .plane_sprite = NULL, .tower_sprite = NULL,
         .background_texture = NULL, .background_sprite = NULL, .hitbox = NULL,
-        .tower_radius = NULL, .display_area = 1, .display_sprite = 1};
+        .tower_radius = NULL, .display_area = TRUE, .display_sprite = TRUE};
     aircraft_t *aircraft = NULL;
     tower_t *tower = NULL;
 

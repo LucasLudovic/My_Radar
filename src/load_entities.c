@@ -21,11 +21,11 @@ int add_to_tower(tower_t *tower, char **array, int tower_added)
             return FAILURE;
     if (array[DATA_TOWER] != NULL)
         return FAILURE;
-    tower[tower_added].x_position = my_getnbr(array[1]);
-    tower[tower_added].y_position = my_getnbr(array[2]);
-    tower[tower_added].radius = my_getnbr(array[3]);
-    tower[tower_added].radius *= WIDTH;
-    tower[tower_added].radius /= 100;
+    tower[tower_added].x_position = (float)my_getnbr(array[1]);
+    tower[tower_added].y_position = (float)my_getnbr(array[2]);
+    tower[tower_added].radius = (float)my_getnbr(array[3]);
+    tower[tower_added].radius *= (float)WIDTH;
+    tower[tower_added].radius /= 100.f;
     return SUCCESS;
 }
 
@@ -56,19 +56,19 @@ int add_to_plane(aircraft_t *aircraft, char **array, int plane_added)
             return FAILURE;
     if (array[DATA_PLANE] != NULL)
         return FAILURE;
-    aircraft[plane_added].x_departure = my_getnbr(array[1]);
-    aircraft[plane_added].y_departure = my_getnbr(array[2]);
+    aircraft[plane_added].x_departure = (float)my_getnbr(array[1]);
+    aircraft[plane_added].y_departure = (float)my_getnbr(array[2]);
     aircraft[plane_added].x_current = aircraft[plane_added].x_departure;
     aircraft[plane_added].y_current = aircraft[plane_added].y_departure;
-    aircraft[plane_added].x_arrival = my_getnbr(array[3]);
-    aircraft[plane_added].y_arrival = my_getnbr(array[4]);
-    aircraft[plane_added].speed = my_getnbr(array[5]);
-    aircraft[plane_added].delay = my_getnbr(array[6]);
+    aircraft[plane_added].x_arrival = (float)my_getnbr(array[3]);
+    aircraft[plane_added].y_arrival = (float)my_getnbr(array[4]);
+    aircraft[plane_added].speed = (float)my_getnbr(array[5]);
+    aircraft[plane_added].delay = (float)my_getnbr(array[6]);
     aircraft[plane_added].arrived = 0;
-    if (aircraft[plane_added].x_departure > WIDTH ||
-        aircraft[plane_added].x_arrival > WIDTH ||
-        aircraft[plane_added].y_departure > HEIGHT ||
-        aircraft[plane_added].y_arrival > HEIGHT)
+    if (aircraft[plane_added].x_departure > (float)WIDTH ||
+        aircraft[plane_added].x_arrival > (float)WIDTH ||
+        aircraft[plane_added].y_departure > (float)HEIGHT ||
+        aircraft[plane_added].y_arrival > (float)HEIGHT)
         return FAILURE;
     return SUCCESS;
 }

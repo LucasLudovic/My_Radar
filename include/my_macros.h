@@ -24,4 +24,8 @@
     #define RECT 20.f
     #define THICKNESS 3.f
     #define SCALE 0.07f
+    #define TIME_FRAME_MS 20
+    #define SECOND_IN_MS 1000
+    #define TRUE 1
+    #define FALSE 0
 #endif
