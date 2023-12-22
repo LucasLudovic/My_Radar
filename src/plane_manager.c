@@ -15,7 +15,7 @@ void move_x(aircraft_t *aircraft)
 {
     if (aircraft->x_departure < aircraft->x_arrival) {
         if (aircraft->x_current < aircraft->x_arrival) {
-            aircraft->x_departure += aircraft->speed;
+            aircraft->x_current += aircraft->speed;
             return;
         }
         aircraft->arrived = 1;
@@ -23,7 +23,28 @@ void move_x(aircraft_t *aircraft)
     }
     if (aircraft->x_departure > aircraft->x_arrival) {
         if (aircraft->x_current > aircraft->x_arrival) {
-            aircraft->x_departure -= aircraft->speed;
+            aircraft->x_current -= aircraft->speed;
+            return;
+        }
+        aircraft->arrived = 1;
+        return;
+    }
+}
+
+static
+void move_y(aircraft_t *aircraft)
+{
+    if (aircraft->y_departure < aircraft->y_arrival) {
+        if (aircraft->y_current < aircraft->y_arrival) {
+            aircraft->y_current += aircraft->speed;
+            return;
+        }
+        aircraft->arrived = 1;
+        return;
+    }
+    if (aircraft->y_departure > aircraft->y_arrival) {
+        if (aircraft->y_current > aircraft->y_arrival) {
+            aircraft->y_current -= aircraft->speed;
             return;
         }
         aircraft->arrived = 1;
@@ -36,9 +57,7 @@ int move_plane(aircraft_t *aircraft)
     if (aircraft == NULL)
         return FAILURE;
     move_x(aircraft);
-    if (aircraft->y_departure < aircraft->y_arrival)
-        if (aircraft->y_current < aircraft->y_arrival)
-            aircraft->y_departure += aircraft->speed;
+    move_y(aircraft);
     return SUCCESS;
 }
 
@@ -48,10 +67,15 @@ void display_plane(manager_t *manager, aircraft_t *aircraft)
 
     for (int i = 0; i < manager->nb_planes; i += 1) {
         move_plane(&aircraft[i]);
-        plane_position.x = (float)aircraft[i].x_departure;
-        plane_position.y = (float)aircraft[i].y_departure;
+        plane_position.x = (float)aircraft[i].x_current;
+        plane_position.y = (float)aircraft[i].y_current;
         sfSprite_setPosition(manager->plane_sprite, plane_position);
-        sfRenderWindow_drawSprite(manager->window,
-            manager->plane_sprite, NULL);
+        plane_position.x += HALF_SPRITE;
+        plane_position.y += HALF_SPRITE;
+        sfSprite_setOrigin(manager->plane_sprite, plane_position);
+        if (manager->display_sprite == 1 && aircraft[i].arrived != 1) {
+            sfRenderWindow_drawSprite(manager->window,
+                manager->plane_sprite, NULL);
+        }
     }
 }

@@ -19,7 +19,7 @@ void switch_hitboxes_and_area(manager_t *manager)
 static
 void switch_sprites(manager_t *manager)
 {
-    my_putstr("S\n");
+    manager->display_sprite = (manager->display_sprite == 0) ? 1 : 0;
 }
 
 void check_events(manager_t *manager)

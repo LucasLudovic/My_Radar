@@ -87,8 +87,6 @@ int initialize_manager(manager_t *sim_manager)
 static
 void simulate(manager_t *manager, aircraft_t *aircraft, tower_t *tower)
 {
-    sfVector2f tower_position = { .x = 0, .y = 0 };
-
     sfRenderWindow_clear(manager->window, sfBlack);
     display_background(manager);
     display_plane(manager, aircraft);

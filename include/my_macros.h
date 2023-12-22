@@ -20,5 +20,6 @@
     #define FRAME 60
     #define DATA_PLANE 7
     #define DATA_TOWER 4
+    #define HALF_SPRITE 10
 
 #endif
