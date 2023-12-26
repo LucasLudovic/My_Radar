@@ -20,7 +20,7 @@
     #define FRAME 60
     #define DATA_PLANE 7
     #define DATA_TOWER 4
-    #define HALF_SPRITE 10
+    #define SPRITE_SIZE 20
     #define RECT 20.f
     #define THICKNESS 3.f
     #define SCALE 0.07f
@@ -28,4 +28,6 @@
     #define SECOND_IN_MS 1000
     #define TRUE 1
     #define FALSE 0
+    #define GRID_WIDTH (WIDTH / SPRITE_SIZE)
+    #define HEIGHT_WIDTH (HEIGHT / SPRITE_SIZE)
 #endif

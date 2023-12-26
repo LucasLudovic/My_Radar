@@ -17,6 +17,7 @@
 #include "simulation_manager.h"
 #include "plane_manager.h"
 #include "tower_manager.h"
+#include "collision.h"
 
 static
 int free_array(aircraft_t **aircraft, tower_t **tower, int return_value)
@@ -106,6 +107,7 @@ int initialize_manager(manager_t *sim_manager)
         sim_manager->background_texture == NULL)
         return display_error("Failed to load the assets\n");
     init_shape(sim_manager);
+    sim_manager->grid = initialize_grid(sim_manager);
     return load_sprite(sim_manager);
 }
 
@@ -148,7 +150,8 @@ int my_radar(const char *path)
     manager_t sim_manager = { .window = NULL, .plane_texture = NULL,
         .tower_texture = NULL, .plane_sprite = NULL, .tower_sprite = NULL,
         .background_texture = NULL, .background_sprite = NULL, .hitbox = NULL,
-        .tower_radius = NULL, .display_area = TRUE, .display_sprite = TRUE};
+        .tower_radius = NULL, .display_area = TRUE, .display_sprite = TRUE,
+        .grid = NULL };
     aircraft_t *aircraft = NULL;
     tower_t *tower = NULL;
 
