@@ -28,7 +28,7 @@ typedef struct tower_s {
 } tower_t;
 
 typedef struct grid_s {
-    aircraft_t *aircraft;
+    aircraft_t **aircraft;
     tower_t *tower;
     int nb_planes;
     int nb_towers;

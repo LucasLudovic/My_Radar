@@ -9,6 +9,7 @@
 #include "my_structs.h"
 #include "plane_manager.h"
 #include "simulation_manager.h"
+#include "collision.h"
 
 static
 void move_x(aircraft_t *aircraft)
@@ -83,5 +84,8 @@ void display_plane(manager_t *manager, aircraft_t *aircraft)
             sfRenderWindow_drawSprite(manager->window,
                 manager->plane_sprite, NULL);
         }
+        add_plane_to_grid(manager, &aircraft[i]);
     }
+    destroy_grid(manager);
+    initialize_grid(manager);
 }
