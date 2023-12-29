@@ -24,7 +24,8 @@ void *my_memcpy(void *dest, void *src, size_t size)
 }
 
 static
-int destroy_grid_aircraft(manager_t *manager, int i) {
+int destroy_grid_aircraft(manager_t *manager, int i)
+{
     for (int j = 0; j < GRID_WIDTH; j += 1) {
         if (manager->grid[i][j].aircraft == NULL)
             return FAILURE;
