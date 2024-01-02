@@ -113,14 +113,17 @@ int initialize_manager(manager_t *sim_manager)
 }
 
 static
-void simulate(manager_t *manager, aircraft_t *aircraft, tower_t *tower)
+void simulate(manager_t *manager, aircraft_t *aircraft, tower_t *tower,
+    int *displayed)
 {
     sfRenderWindow_clear(manager->window, sfBlack);
     display_background(manager);
-    display_plane(manager, aircraft);
-    display_tower(manager, tower);
-    check_collision(manager);
-    sfRenderWindow_display(manager->window);
+    *displayed = display_plane(manager, aircraft);
+    if (*displayed != 0) {
+        display_tower(manager, tower);
+        check_collision(manager);
+        sfRenderWindow_display(manager->window);
+    }
 }
 
 static
@@ -128,16 +131,17 @@ int simulation_loop(manager_t *manager, aircraft_t *aircraft, tower_t *tower)
 {
     sfClock *clock = sfClock_create();
     sfTime time;
+    int displayed = 1;
 
     if (clock == NULL)
         return FAILURE;
     sfRenderWindow_display(manager->window);
-    while (sfRenderWindow_isOpen(manager->window)) {
+    while (sfRenderWindow_isOpen(manager->window) && displayed != 0) {
         time = sfClock_getElapsedTime(clock);
         if (sfRenderWindow_pollEvent(manager->window, &(manager->event)))
             check_events(manager);
         if (sfTime_asMilliseconds(time) >= TIME_FRAME_MS) {
-            simulate(manager, aircraft, tower);
+            simulate(manager, aircraft, tower, &displayed);
             sfClock_restart(clock);
         }
     }

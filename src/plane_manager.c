@@ -5,6 +5,8 @@
 ** Handle the planes
 */
 
+#include <stdio.h>
+#include "math.h"
 #include "my_macros.h"
 #include "my_structs.h"
 #include "plane_manager.h"
@@ -13,13 +15,13 @@
 #include "grid.h"
 
 static
-void move_x(aircraft_t *aircraft)
+void move_x(aircraft_t *aircraft, float delta_x, float dist)
 {
-    float speed = aircraft->speed * TIME_FRAME_MS / SECOND_IN_MS;
+    float speed_x = (delta_x / dist) * aircraft->speed * TIME_FRAME_MS / SECOND_IN_MS;
 
-    if (aircraft->x_departure < aircraft->x_arrival) {
+     aircraft->x_current += speed_x;
+     if (aircraft->x_departure < aircraft->x_arrival) {
         if (aircraft->x_current < aircraft->x_arrival) {
-            aircraft->x_current += speed;
             return;
         }
         aircraft->arrived = TRUE;
@@ -27,7 +29,6 @@ void move_x(aircraft_t *aircraft)
     }
     if (aircraft->x_departure > aircraft->x_arrival) {
         if (aircraft->x_current > aircraft->x_arrival) {
-            aircraft->x_current -= speed;
             return;
         }
         aircraft->arrived = TRUE;
@@ -36,13 +37,13 @@ void move_x(aircraft_t *aircraft)
 }
 
 static
-void move_y(aircraft_t *aircraft)
+void move_y(aircraft_t *aircraft, float delta_y, float dist)
 {
-    float speed = aircraft->speed * TIME_FRAME_MS / SECOND_IN_MS;
+    float speed_y = (delta_y / dist) * aircraft->speed * TIME_FRAME_MS / SECOND_IN_MS;
 
+    aircraft->y_current += speed_y;
     if (aircraft->y_departure < aircraft->y_arrival) {
         if (aircraft->y_current < aircraft->y_arrival) {
-            aircraft->y_current += speed;
             return;
         }
         aircraft->arrived = TRUE;
@@ -50,9 +51,9 @@ void move_y(aircraft_t *aircraft)
     }
     if (aircraft->y_departure > aircraft->y_arrival) {
         if (aircraft->y_current > aircraft->y_arrival) {
-            aircraft->y_current -= speed;
             return;
         }
+        printf("x_current : %f\ny_current : %f\n", aircraft->x_current, aircraft->y_current);
         aircraft->arrived = TRUE;
         return;
     }
@@ -60,29 +61,36 @@ void move_y(aircraft_t *aircraft)
 
 int move_plane(aircraft_t *aircraft)
 {
+    float delta_x = aircraft->x_arrival - aircraft->x_departure;
+    float delta_y = aircraft->y_arrival - aircraft->y_departure;
+    float dist = sqrtf(delta_x * delta_x + delta_y * delta_y);
+
     if (aircraft == NULL)
         return FAILURE;
-    move_x(aircraft);
-    move_y(aircraft);
+    move_x(aircraft, delta_x, dist);
+    move_y(aircraft, delta_y, dist);
     return SUCCESS;
 }
 
-void display_single_plane(manager_t *manager, aircraft_t *aircraft, int i)
+void display_single_plane(manager_t *manager, aircraft_t *aircraft,
+    int *displayed, int i)
 {
     if (manager->display_sprite == TRUE && aircraft[i].arrived != TRUE) {
         sfRenderWindow_drawSprite(manager->window,
             manager->plane_sprite, NULL);
+        *displayed += 1;
     }
 }
 
-void display_plane(manager_t *manager, aircraft_t *aircraft)
+int display_plane(manager_t *manager, aircraft_t *aircraft)
 {
     sfVector2f plane_position = { .x = 0, .y = 0 };
+    int displayed = 0;
 
     destroy_grid(manager);
     initialize_grid(manager);
     for (int i = 0; i < manager->nb_planes; i += 1) {
-        if (aircraft[i].destroyed == TRUE)
+        if (aircraft[i].destroyed == TRUE || aircraft[i].arrived == TRUE)
             continue;
         move_plane(&aircraft[i]);
         plane_position.x = aircraft[i].x_current;
@@ -93,7 +101,8 @@ void display_plane(manager_t *manager, aircraft_t *aircraft)
             sfRenderWindow_drawRectangleShape(manager->window, manager->hitbox,
                 NULL);
         }
-        display_single_plane(manager, aircraft, i);
+        display_single_plane(manager, aircraft, &displayed, i);
         add_plane_to_grid(manager, &aircraft[i]);
     }
+    return displayed;
 }

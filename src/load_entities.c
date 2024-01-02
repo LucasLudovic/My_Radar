@@ -26,6 +26,10 @@ int add_to_tower(tower_t *tower, char **array, int tower_added)
     tower[tower_added].radius = (float)my_getnbr(array[3]);
     tower[tower_added].radius *= (float)WIDTH;
     tower[tower_added].radius /= 100.f;
+    if (my_getnbr(array[1]) > WIDTH || my_getnbr(array[1]) < 0 ||
+        my_getnbr(array[2]) > HEIGHT || my_getnbr(array[2]) < 0 ||
+        my_getnbr(array[3]) > 100 || my_getnbr(array[3]) < 0)
+        return FAILURE;
     return SUCCESS;
 }
 
@@ -131,7 +135,8 @@ int add_planes_towers(manager_t *manager, const char *path,
         if (end_file <= 0)
             break;
         if (buff[0] == 'A')
-            add_single_plane(manager, aircraft, buff);
+            if (add_single_plane(manager, aircraft, buff) == FAILURE)
+                return display_error("Wrong value in file\n");
         if (buff[0] == 'T')
             add_single_tower(manager, tower, buff);
     }

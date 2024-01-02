@@ -5,7 +5,15 @@
 ## Makefile for my lib
 ##
 
-SRC	=	$(wildcard src/*.c)
+SRC	=	src/collision.c \
+		src/display.c \
+		src/events.c \
+		src/grid.c \
+		src/load_entities.c \
+		src/main.c \
+		src/plane_manager.c \
+		src/simulation_manager.c \
+		src/tower_manager.c
 
 OBJ	=	$(SRC:.c=.o)
 
@@ -19,6 +27,7 @@ CFLAGS	+=	-lcsfml-audio
 CFLAGS	+=	-lcsfml-window
 CFLAGS	+=	-lcsfml-system
 CFLAGS	+=	-W -Wall -Wextra -Wpedantic
+CFLAGS	+=	-lm
 
 LIB	=	-L lib/my -lmy
 
