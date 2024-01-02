@@ -17,10 +17,11 @@
 static
 void move_x(aircraft_t *aircraft, float delta_x, float dist)
 {
-    float speed_x = (delta_x / dist) * aircraft->speed * TIME_FRAME_MS / SECOND_IN_MS;
+    float speed_x = (delta_x / dist) * aircraft->speed;
 
-     aircraft->x_current += speed_x;
-     if (aircraft->x_departure < aircraft->x_arrival) {
+    speed_x = speed_x * TIME_FRAME_MS / SECOND_IN_MS;
+    aircraft->x_current += speed_x;
+    if (aircraft->x_departure < aircraft->x_arrival) {
         if (aircraft->x_current < aircraft->x_arrival) {
             return;
         }
@@ -39,8 +40,9 @@ void move_x(aircraft_t *aircraft, float delta_x, float dist)
 static
 void move_y(aircraft_t *aircraft, float delta_y, float dist)
 {
-    float speed_y = (delta_y / dist) * aircraft->speed * TIME_FRAME_MS / SECOND_IN_MS;
+    float speed_y = (delta_y / dist) * aircraft->speed;
 
+    speed_y = speed_y * TIME_FRAME_MS / SECOND_IN_MS;
     aircraft->y_current += speed_y;
     if (aircraft->y_departure < aircraft->y_arrival) {
         if (aircraft->y_current < aircraft->y_arrival) {
@@ -53,7 +55,6 @@ void move_y(aircraft_t *aircraft, float delta_y, float dist)
         if (aircraft->y_current > aircraft->y_arrival) {
             return;
         }
-        printf("x_current : %f\ny_current : %f\n", aircraft->x_current, aircraft->y_current);
         aircraft->arrived = TRUE;
         return;
     }
@@ -82,6 +83,17 @@ void display_single_plane(manager_t *manager, aircraft_t *aircraft,
     }
 }
 
+static
+void display_plane_area(manager_t *manager, aircraft_t *aircraft,
+    sfVector2f plane_position, int i)
+{
+    if (manager->display_area == TRUE && aircraft[i].arrived != TRUE) {
+        sfRectangleShape_setPosition(manager->hitbox, plane_position);
+        sfRenderWindow_drawRectangleShape(manager->window, manager->hitbox,
+            NULL);
+    }
+}
+
 int display_plane(manager_t *manager, aircraft_t *aircraft)
 {
     sfVector2f plane_position = { .x = 0, .y = 0 };
@@ -96,11 +108,7 @@ int display_plane(manager_t *manager, aircraft_t *aircraft)
         plane_position.x = aircraft[i].x_current;
         plane_position.y = aircraft[i].y_current;
         sfSprite_setPosition(manager->plane_sprite, plane_position);
-        if (manager->display_area == TRUE && aircraft[i].arrived != TRUE) {
-            sfRectangleShape_setPosition(manager->hitbox, plane_position);
-            sfRenderWindow_drawRectangleShape(manager->window, manager->hitbox,
-                NULL);
-        }
+        display_plane_area(manager, aircraft, plane_position, i);
         display_single_plane(manager, aircraft, &displayed, i);
         add_plane_to_grid(manager, &aircraft[i]);
     }

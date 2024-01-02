@@ -121,7 +121,7 @@ void simulate(manager_t *manager, aircraft_t *aircraft, tower_t *tower,
     *displayed = display_plane(manager, aircraft);
     if (*displayed != 0) {
         display_tower(manager, tower);
-        check_collision(manager);
+        check_collision(manager, tower);
         sfRenderWindow_display(manager->window);
     }
 }

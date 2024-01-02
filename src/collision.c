@@ -68,24 +68,51 @@ void collide_with_sides(manager_t *manager, aircraft_t *plane, int i, int j)
 }
 
 static
-void check_single_case(manager_t *manager, int i, int j)
+int check_if_tower(manager_t *manager, tower_t *tower, aircraft_t *aircraft)
+{
+    for (int i = 0; i < manager->nb_towers; i += 1) {
+        if (tower == NULL || aircraft == NULL)
+            return FALSE;
+        printf("Radius : %f\n", tower[i].radius);
+        if (tower[i].x_position >= aircraft->x_current && tower[i].x_position - tower[i].radius <= aircraft->x_current) {
+            if (tower[i].y_position >= aircraft->y_current && tower[i].y_position - tower[i].radius <= aircraft->y_current)
+                return TRUE;
+            if (tower[i].y_position <= aircraft->y_current && tower[i].y_position + tower[i].radius >= aircraft->y_current)
+                return TRUE;
+        }
+        if (tower[i].x_position <= aircraft->x_current && tower[i].x_position + tower[i].radius >= aircraft->x_current) {
+            if (tower[i].y_position >= aircraft->y_current && tower[i].y_position - tower[i].radius <= aircraft->y_current)
+                return TRUE;
+            if (tower[i].y_position <= aircraft->y_current && tower[i].y_position + tower[i].radius >= aircraft->y_current)
+                return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+static
+void check_single_case(manager_t *manager, tower_t *tower, int i, int j)
 {
     int plane_checked = 0;
     grid_t *cell = NULL;
 
     cell = &manager->grid[i][j];
     while (plane_checked < cell->nb_planes) {
+        if (check_if_tower(manager, tower, cell->aircraft[plane_checked]) == TRUE) {
+            plane_checked += 1;
+            continue;
+        }
         check_side(manager, cell->aircraft[plane_checked], i, j);
         collide_with_sides(manager, cell->aircraft[plane_checked], i, j);
         plane_checked += 1;
     }
 }
 
-void check_collision(manager_t *manager)
+void check_collision(manager_t *manager, tower_t *tower)
 {
     for (int i = 0; i < GRID_HEIGHT; i += 1) {
         for (int j = 0; j < GRID_WIDTH; j += 1) {
-            check_single_case(manager, i, j);
+            check_single_case(manager, tower, i, j);
         }
     }
 }

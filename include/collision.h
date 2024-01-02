@@ -9,6 +9,6 @@
     #define COLLISION_H_
     #include "my_structs.h"
 
-void check_collision(manager_t *manager);
+void check_collision(manager_t *manager, tower_t *tower);
 
 #endif

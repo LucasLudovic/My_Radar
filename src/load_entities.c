@@ -76,6 +76,7 @@ int add_to_plane(aircraft_t *aircraft, char **array, int plane_added)
     aircraft[plane_added].delay = (float)my_getnbr(array[6]);
     aircraft[plane_added].arrived = FALSE;
     aircraft[plane_added].destroyed = FALSE;
+    aircraft[plane_added].invincible = FALSE;
     if (aircraft[plane_added].x_departure > (float)WIDTH ||
         aircraft[plane_added].x_arrival > (float)WIDTH ||
         aircraft[plane_added].y_departure > (float)HEIGHT ||
@@ -120,6 +121,19 @@ int allocate_memory(aircraft_t **aircraft, tower_t **tower,
     return SUCCESS;
 }
 
+static
+int check_entities(char *buff, manager_t *manager, aircraft_t *aircraft,
+    tower_t *tower)
+{
+    if (buff[0] == 'A')
+        if (add_single_plane(manager, aircraft, buff) == FAILURE)
+            return display_error("Wrong value in file (plane)\n");
+    if (buff[0] == 'T')
+        if (add_single_tower(manager, tower, buff))
+            return display_error("Wrong value in file (tower)\n");
+    return SUCCESS;
+}
+
 int add_planes_towers(manager_t *manager, const char *path,
     aircraft_t *aircraft, tower_t *tower)
 {
@@ -134,11 +148,8 @@ int add_planes_towers(manager_t *manager, const char *path,
         end_file = getline(&buff, &len_read, file);
         if (end_file <= 0)
             break;
-        if (buff[0] == 'A')
-            if (add_single_plane(manager, aircraft, buff) == FAILURE)
-                return display_error("Wrong value in file\n");
-        if (buff[0] == 'T')
-            add_single_tower(manager, tower, buff);
+        if (check_entities(buff, manager, aircraft, tower) == FAILURE)
+            return FAILURE;
     }
     if (buff != NULL)
         free(buff);
