@@ -11,70 +11,81 @@
 #include "my_structs.h"
 #include "my.h"
 
-void *my_memcpy(void *dest, void *src, size_t size)
+static
+void collide_single_plane(aircraft_t *plane_to_collide, aircraft_t *plane)
 {
-    char *dest_cpy = (char *)dest;
-    char *src_cpy = (char *)src;
+    int x_collide = 0;
+    int y_collide = 0;
 
-    if (dest == NULL || src == NULL)
-        return NULL;
-    for (size_t i = 0; i < size; i += 1)
-        dest_cpy[i] = src_cpy[i];
-    return dest;
+    x_collide = (int)plane_to_collide->x_current;
+    y_collide = (int)plane_to_collide->y_current;
+    if (abs((int)plane->x_current - x_collide) <= SPRITE_SIZE &&
+        abs((int)plane->y_current - y_collide) <= SPRITE_SIZE &&
+        plane->destroyed != TRUE && plane_to_collide->destroyed != TRUE) {
+        plane->destroyed = TRUE;
+        plane_to_collide->destroyed = TRUE;
+    }
 }
 
 static
-int destroy_grid_aircraft(manager_t *manager, int i)
+void check_side(manager_t *manager, aircraft_t *plane, int i, int j)
 {
-    for (int j = 0; j < GRID_WIDTH; j += 1) {
-        if (manager->grid[i][j].aircraft == NULL)
-            return FAILURE;
-        free(manager->grid[i][j].aircraft);
-    }
-    return SUCCESS;
-}
+    grid_t *cell_top = NULL;
+    aircraft_t *plane_to_collide = NULL;
+    int plane_to_collide_with = 0;
 
-void destroy_grid(manager_t *manager)
-{
-    if (manager == NULL)
-        return;
-    for (int i = 0; i < HEIGHT_WIDTH; i += 1) {
-        if (manager->grid[i] == NULL)
-            return;
-        if (destroy_grid_aircraft(manager, i) == FAILURE)
-            return;
+    cell_top = &manager->grid[i][j];
+    while (plane_to_collide_with < cell_top->nb_planes) {
+        plane_to_collide = cell_top->aircraft[plane_to_collide_with];
+        if (plane_to_collide == plane) {
+            plane_to_collide_with += 1;
+            continue;
+        }
+        collide_single_plane(plane_to_collide, plane);
+        plane_to_collide_with += 1;
     }
 }
 
-grid_t **initialize_grid(manager_t *manager)
+static
+void collide_with_sides(manager_t *manager, aircraft_t *plane, int i, int j)
 {
-    manager->grid = malloc(sizeof(grid_t *) * HEIGHT_WIDTH);
-    for (int i = 0; i < HEIGHT_WIDTH; i += 1) {
-        manager->grid[i] = malloc(sizeof(grid_t) * GRID_WIDTH);
+    if (i > 0)
+        check_side(manager, plane, i - 1, j);
+    if (i > 0 && j > 0)
+        check_side(manager, plane, i - 1, j - 1);
+    if (i > 0 && j < GRID_WIDTH - 1)
+        check_side(manager, plane, i -1, j + 1);
+    if (i < GRID_HEIGHT - 1)
+        check_side(manager, plane, i + 1, j);
+    if (i < GRID_HEIGHT - 1 && j > 0)
+        check_side(manager, plane, i + 1, j - 1);
+    if (i < GRID_HEIGHT- 1 && j < GRID_WIDTH - 1)
+        check_side(manager, plane, i + 1, j + 1);
+    if (j > 0)
+        check_side(manager, plane, i, j - 1);
+    if (j < GRID_WIDTH - 1)
+        check_side(manager, plane, i, j + 1);
+}
+
+static
+void check_single_case(manager_t *manager, int i, int j)
+{
+    int plane_checked = 0;
+    grid_t *cell = NULL;
+
+    cell = &manager->grid[i][j];
+    while (plane_checked < cell->nb_planes) {
+        check_side(manager, cell->aircraft[plane_checked], i, j);
+        collide_with_sides(manager, cell->aircraft[plane_checked], i, j);
+        plane_checked += 1;
+    }
+}
+
+void check_collision(manager_t *manager)
+{
+    for (int i = 0; i < GRID_HEIGHT; i += 1) {
         for (int j = 0; j < GRID_WIDTH; j += 1) {
-            manager->grid[i][j].aircraft = malloc(sizeof(aircraft_t *));
-            manager->grid[i][j].nb_planes = 0;
+            check_single_case(manager, i, j);
         }
     }
-    return manager->grid;
-}
-
-void add_plane_to_grid(manager_t *manager, aircraft_t *aircraft)
-{
-    int x = (int)aircraft->x_current / SPRITE_SIZE;
-    int y = (int)aircraft->y_current / SPRITE_SIZE;
-    grid_t *cell = &manager->grid[y][x];
-    aircraft_t **tmp = NULL;
-
-    if (cell == NULL)
-        return;
-    cell->aircraft[cell->nb_planes] = aircraft;
-    cell->nb_planes += 1;
-    tmp = malloc(sizeof(aircraft_t *) * (cell->nb_planes + 1));
-    if (tmp == NULL)
-        return;
-    tmp = my_memcpy(tmp, cell->aircraft,
-        sizeof(aircraft_t *) * cell->nb_planes);
-    free(cell->aircraft);
-    cell->aircraft = tmp;
 }

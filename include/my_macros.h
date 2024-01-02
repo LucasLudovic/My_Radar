@@ -29,5 +29,5 @@
     #define TRUE 1
     #define FALSE 0
     #define GRID_WIDTH (WIDTH / SPRITE_SIZE)
-    #define HEIGHT_WIDTH (HEIGHT / SPRITE_SIZE)
+    #define GRID_HEIGHT (HEIGHT / SPRITE_SIZE)
 #endif

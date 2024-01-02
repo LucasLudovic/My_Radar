@@ -10,6 +10,7 @@
 #include "plane_manager.h"
 #include "simulation_manager.h"
 #include "collision.h"
+#include "grid.h"
 
 static
 void move_x(aircraft_t *aircraft)
@@ -66,11 +67,23 @@ int move_plane(aircraft_t *aircraft)
     return SUCCESS;
 }
 
+void display_single_plane(manager_t *manager, aircraft_t *aircraft, int i)
+{
+    if (manager->display_sprite == TRUE && aircraft[i].arrived != TRUE) {
+        sfRenderWindow_drawSprite(manager->window,
+            manager->plane_sprite, NULL);
+    }
+}
+
 void display_plane(manager_t *manager, aircraft_t *aircraft)
 {
     sfVector2f plane_position = { .x = 0, .y = 0 };
 
+    destroy_grid(manager);
+    initialize_grid(manager);
     for (int i = 0; i < manager->nb_planes; i += 1) {
+        if (aircraft[i].destroyed == TRUE)
+            continue;
         move_plane(&aircraft[i]);
         plane_position.x = aircraft[i].x_current;
         plane_position.y = aircraft[i].y_current;
@@ -80,12 +93,7 @@ void display_plane(manager_t *manager, aircraft_t *aircraft)
             sfRenderWindow_drawRectangleShape(manager->window, manager->hitbox,
                 NULL);
         }
-        if (manager->display_sprite == TRUE && aircraft[i].arrived != TRUE) {
-            sfRenderWindow_drawSprite(manager->window,
-                manager->plane_sprite, NULL);
-        }
+        display_single_plane(manager, aircraft, i);
         add_plane_to_grid(manager, &aircraft[i]);
     }
-    destroy_grid(manager);
-    initialize_grid(manager);
 }

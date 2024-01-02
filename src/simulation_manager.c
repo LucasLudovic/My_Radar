@@ -18,6 +18,7 @@
 #include "plane_manager.h"
 #include "tower_manager.h"
 #include "collision.h"
+#include "grid.h"
 
 static
 int free_array(aircraft_t **aircraft, tower_t **tower, int return_value)
@@ -118,6 +119,7 @@ void simulate(manager_t *manager, aircraft_t *aircraft, tower_t *tower)
     display_background(manager);
     display_plane(manager, aircraft);
     display_tower(manager, tower);
+    check_collision(manager);
     sfRenderWindow_display(manager->window);
 }
 

@@ -49,6 +49,17 @@ int add_single_tower(manager_t *manager, tower_t *tower, char *buff)
 }
 
 static
+void add_positions(aircraft_t *aircraft, char **array, int plane_added)
+{
+    aircraft[plane_added].x_departure = (float)my_getnbr(array[1]);
+    aircraft[plane_added].y_departure = (float)my_getnbr(array[2]);
+    aircraft[plane_added].x_current = aircraft[plane_added].x_departure;
+    aircraft[plane_added].y_current = aircraft[plane_added].y_departure;
+    aircraft[plane_added].x_arrival = (float)my_getnbr(array[3]);
+    aircraft[plane_added].y_arrival = (float)my_getnbr(array[4]);
+}
+
+static
 int add_to_plane(aircraft_t *aircraft, char **array, int plane_added)
 {
     for (int i = 0; i < DATA_PLANE; i += 1)
@@ -56,15 +67,11 @@ int add_to_plane(aircraft_t *aircraft, char **array, int plane_added)
             return FAILURE;
     if (array[DATA_PLANE] != NULL)
         return FAILURE;
-    aircraft[plane_added].x_departure = (float)my_getnbr(array[1]);
-    aircraft[plane_added].y_departure = (float)my_getnbr(array[2]);
-    aircraft[plane_added].x_current = aircraft[plane_added].x_departure;
-    aircraft[plane_added].y_current = aircraft[plane_added].y_departure;
-    aircraft[plane_added].x_arrival = (float)my_getnbr(array[3]);
-    aircraft[plane_added].y_arrival = (float)my_getnbr(array[4]);
+    add_positions(aircraft, array, plane_added);
     aircraft[plane_added].speed = (float)my_getnbr(array[5]);
     aircraft[plane_added].delay = (float)my_getnbr(array[6]);
-    aircraft[plane_added].arrived = 0;
+    aircraft[plane_added].arrived = FALSE;
+    aircraft[plane_added].destroyed = FALSE;
     if (aircraft[plane_added].x_departure > (float)WIDTH ||
         aircraft[plane_added].x_arrival > (float)WIDTH ||
         aircraft[plane_added].y_departure > (float)HEIGHT ||
