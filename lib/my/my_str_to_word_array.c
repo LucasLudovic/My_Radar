@@ -53,19 +53,36 @@ int get_nb_of_words(char const *str)
     return words;
 }
 
+static
+void divide_into_array(char **ptr_to_return, char *arr, int number_of_words)
+{
+    int word_length = 0;
+
+    for (int i = 0; i < number_of_words; i += 1) {
+        while (my_isalphanum(*arr) != 1)
+            arr += 1;
+        word_length = get_word_length(arr);
+        ptr_to_return[i] = malloc(sizeof(char) * (word_length + 1));
+        for (int j = 0; j < word_length; j += 1)
+            ptr_to_return[i][j] = arr[j];
+        ptr_to_return[i][word_length] = '\0';
+        arr += word_length;
+    }
+}
+
 char **my_str_to_word_array(char *tab)
 {
     int number_of_words = get_nb_of_words(tab);
     char *arr = tab;
-    char **ptr_to_return = malloc(sizeof(char *) * number_of_words + 1);
+    char **ptr_to_return = malloc(sizeof(char *) * (number_of_words + 1));
 
-    for (int i = 0; i < number_of_words; i += 1) {
-        ptr_to_return[i] = malloc(sizeof(char) * (get_word_length(arr) + 1));
-        for (int j = 0; j < get_word_length(arr) + 1; j += 1)
-            ptr_to_return[i][j] = arr[j];
-        ptr_to_return[i][get_word_length(arr)] = '\0';
-        arr += get_word_length(ptr_to_return[i]) + 1;
+    if (ptr_to_return == NULL)
+        return NULL;
+    if (arr == NULL) {
+        free(ptr_to_return);
+        return NULL;
     }
+    divide_into_array(ptr_to_return, arr, number_of_words);
     ptr_to_return[number_of_words] = NULL;
     return ptr_to_return;
 }

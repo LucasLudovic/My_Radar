@@ -92,7 +92,6 @@ int add_to_plane(aircraft_t *aircraft, char **array, int plane_added)
     aircraft[plane_added].delay = (float)my_getnbr(array[6]);
     aircraft[plane_added].arrived = FALSE;
     aircraft[plane_added].destroyed = FALSE;
-    aircraft[plane_added].invincible = FALSE;
     if (aircraft[plane_added].x_departure > (float)WIDTH ||
         aircraft[plane_added].x_arrival > (float)WIDTH ||
         aircraft[plane_added].y_departure > (float)HEIGHT ||
