@@ -121,6 +121,29 @@ int add_single_plane(manager_t *manager, aircraft_t *aircraft, char *buff)
     return return_value;
 }
 
+int check_nb_assets(manager_t *manager, char *buff, FILE *file)
+{
+    ssize_t end_file = 1;
+    size_t len_read = 0;
+
+    while (end_file > 0) {
+        end_file = getline(&buff, &len_read, file);
+        if (end_file <= 0)
+            break;
+        if (buff[0] == 'A')
+            manager->nb_planes += 1;
+        if (buff[0] == 'T')
+            manager->nb_towers += 1;
+        if (buff[0] != 'A' && buff[0] != 'T')
+            return FAILURE;
+    }
+    if (buff != NULL) {
+        free(buff);
+        buff = NULL;
+    }
+    return SUCCESS;
+}
+
 int allocate_memory(aircraft_t **aircraft, tower_t **tower,
     const char *path, manager_t *manager)
 {
@@ -170,24 +193,5 @@ int add_planes_towers(manager_t *manager, const char *path,
     }
     if (buff != NULL)
         free(buff);
-    return SUCCESS;
-}
-
-int check_nb_assets(manager_t *manager, char *buff, FILE *file)
-{
-    ssize_t end_file = 1;
-    size_t len_read = 0;
-
-    while (end_file > 0) {
-        end_file = getline(&buff, &len_read, file);
-        if (end_file <= 0)
-            break;
-        if (buff[0] == 'A')
-            manager->nb_planes += 1;
-        if (buff[0] == 'T')
-            manager->nb_towers += 1;
-        if (buff[0] != 'A' && buff[0] != 'T')
-            return FAILURE;
-    }
     return SUCCESS;
 }
