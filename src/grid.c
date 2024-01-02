@@ -37,14 +37,16 @@ int destroy_grid_aircraft(manager_t *manager, int i)
 
 void destroy_grid(manager_t *manager)
 {
-    if (manager == NULL)
+    if (manager == NULL || manager->grid == NULL)
         return;
     for (int i = 0; i < GRID_HEIGHT; i += 1) {
         if (manager->grid[i] == NULL)
             return;
         if (destroy_grid_aircraft(manager, i) == FAILURE)
             return;
+        free(manager->grid[i]);
     }
+    free(manager->grid);
 }
 
 grid_t **initialize_grid(manager_t *manager)
