@@ -172,5 +172,7 @@ int check_nb_assets(manager_t *manager, char *buff, FILE *file)
         if (buff[0] != 'A' && buff[0] != 'T')
             return FAILURE;
     }
+    if (buff != NULL)
+        free(buff);
     return SUCCESS;
 }

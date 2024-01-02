@@ -68,24 +68,45 @@ void collide_with_sides(manager_t *manager, aircraft_t *plane, int i, int j)
 }
 
 static
-int check_if_tower(manager_t *manager, tower_t *tower, aircraft_t *aircraft)
+int check_radius_before(tower_t *tower, aircraft_t *aircraft, int i)
+{
+    if (tower[i].x_position >= aircraft->x_current &&
+        tower[i].x_position - tower[i].radius <= aircraft->x_current) {
+        if (tower[i].y_position >= aircraft->y_current &&
+            tower[i].y_position - tower[i].radius <= aircraft->y_current)
+            return TRUE;
+        if (tower[i].y_position <= aircraft->y_current &&
+            tower[i].y_position + tower[i].radius >= aircraft->y_current)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+static
+int check_radius_after(tower_t *tower, aircraft_t *aircraft, int i)
+{
+    if (tower[i].x_position <= aircraft->x_current &&
+        tower[i].x_position + tower[i].radius >= aircraft->x_current) {
+        if (tower[i].y_position >= aircraft->y_current &&
+            tower[i].y_position - tower[i].radius <= aircraft->y_current)
+            return TRUE;
+        if (tower[i].y_position <= aircraft->y_current &&
+            tower[i].y_position + tower[i].radius >= aircraft->y_current)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+static
+int check_tower(manager_t *manager, tower_t *tower, aircraft_t *aircraft)
 {
     for (int i = 0; i < manager->nb_towers; i += 1) {
         if (tower == NULL || aircraft == NULL)
             return FALSE;
-        printf("Radius : %f\n", tower[i].radius);
-        if (tower[i].x_position >= aircraft->x_current && tower[i].x_position - tower[i].radius <= aircraft->x_current) {
-            if (tower[i].y_position >= aircraft->y_current && tower[i].y_position - tower[i].radius <= aircraft->y_current)
-                return TRUE;
-            if (tower[i].y_position <= aircraft->y_current && tower[i].y_position + tower[i].radius >= aircraft->y_current)
-                return TRUE;
-        }
-        if (tower[i].x_position <= aircraft->x_current && tower[i].x_position + tower[i].radius >= aircraft->x_current) {
-            if (tower[i].y_position >= aircraft->y_current && tower[i].y_position - tower[i].radius <= aircraft->y_current)
-                return TRUE;
-            if (tower[i].y_position <= aircraft->y_current && tower[i].y_position + tower[i].radius >= aircraft->y_current)
-                return TRUE;
-        }
+        if (check_radius_before(tower, aircraft, i) == TRUE)
+            return TRUE;
+        if (check_radius_after(tower, aircraft, i) == TRUE)
+            return TRUE;
     }
     return FALSE;
 }
@@ -93,18 +114,20 @@ int check_if_tower(manager_t *manager, tower_t *tower, aircraft_t *aircraft)
 static
 void check_single_case(manager_t *manager, tower_t *tower, int i, int j)
 {
-    int plane_checked = 0;
+    int plane_check = 0;
     grid_t *cell = NULL;
 
     cell = &manager->grid[i][j];
-    while (plane_checked < cell->nb_planes) {
-        if (check_if_tower(manager, tower, cell->aircraft[plane_checked]) == TRUE) {
-            plane_checked += 1;
+    while (plane_check < cell->nb_planes) {
+        if (cell->aircraft[plane_check]->arrived == TRUE ||
+            cell->aircraft[plane_check]->destroyed == TRUE ||
+            check_tower(manager, tower, cell->aircraft[plane_check]) == TRUE) {
+            plane_check += 1;
             continue;
         }
-        check_side(manager, cell->aircraft[plane_checked], i, j);
-        collide_with_sides(manager, cell->aircraft[plane_checked], i, j);
-        plane_checked += 1;
+        check_side(manager, cell->aircraft[plane_check], i, j);
+        collide_with_sides(manager, cell->aircraft[plane_check], i, j);
+        plane_check += 1;
     }
 }
 

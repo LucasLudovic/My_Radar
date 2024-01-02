@@ -73,13 +73,11 @@ int move_plane(aircraft_t *aircraft)
     return SUCCESS;
 }
 
-void display_single_plane(manager_t *manager, aircraft_t *aircraft,
-    int *displayed, int i)
+void display_single_plane(manager_t *manager, aircraft_t *aircraft, int i)
 {
     if (manager->display_sprite == TRUE && aircraft[i].arrived != TRUE) {
         sfRenderWindow_drawSprite(manager->window,
             manager->plane_sprite, NULL);
-        *displayed += 1;
     }
 }
 
@@ -97,20 +95,21 @@ void display_plane_area(manager_t *manager, aircraft_t *aircraft,
 int display_plane(manager_t *manager, aircraft_t *aircraft)
 {
     sfVector2f plane_position = { .x = 0, .y = 0 };
-    int displayed = 0;
+    int alive = 0;
 
     destroy_grid(manager);
     initialize_grid(manager);
     for (int i = 0; i < manager->nb_planes; i += 1) {
         if (aircraft[i].destroyed == TRUE || aircraft[i].arrived == TRUE)
             continue;
+        alive += 1;
         move_plane(&aircraft[i]);
         plane_position.x = aircraft[i].x_current;
         plane_position.y = aircraft[i].y_current;
         sfSprite_setPosition(manager->plane_sprite, plane_position);
         display_plane_area(manager, aircraft, plane_position, i);
-        display_single_plane(manager, aircraft, &displayed, i);
+        display_single_plane(manager, aircraft, i);
         add_plane_to_grid(manager, &aircraft[i]);
     }
-    return displayed;
+    return alive;
 }

@@ -21,8 +21,11 @@
 #include "grid.h"
 
 static
-int free_array(aircraft_t **aircraft, tower_t **tower, int return_value)
+int free_array(manager_t *manager, aircraft_t **aircraft, tower_t **tower,
+    int return_value)
 {
+    if (manager->grid != NULL)
+        destroy_grid(manager);
     if (tower != NULL && *tower != NULL)
         free(*tower);
     if (aircraft != NULL && *aircraft != NULL)
@@ -52,7 +55,7 @@ int destroy_end(manager_t *sim_manager, aircraft_t **aircraft,
         sfRectangleShape_destroy(sim_manager->hitbox);
     if (sim_manager->tower_radius != NULL)
         sfCircleShape_destroy(sim_manager->tower_radius);
-    return free_array(aircraft, tower, return_value);
+    return free_array(sim_manager, aircraft, tower, return_value);
 }
 
 static
@@ -131,17 +134,17 @@ int simulation_loop(manager_t *manager, aircraft_t *aircraft, tower_t *tower)
 {
     sfClock *clock = sfClock_create();
     sfTime time;
-    int displayed = 1;
+    int alive = 1;
 
     if (clock == NULL)
         return FAILURE;
     sfRenderWindow_display(manager->window);
-    while (sfRenderWindow_isOpen(manager->window) && displayed != 0) {
+    while (sfRenderWindow_isOpen(manager->window) && alive != 0) {
         time = sfClock_getElapsedTime(clock);
         if (sfRenderWindow_pollEvent(manager->window, &(manager->event)))
             check_events(manager);
         if (sfTime_asMilliseconds(time) >= TIME_FRAME_MS) {
-            simulate(manager, aircraft, tower, &displayed);
+            simulate(manager, aircraft, tower, &alive);
             sfClock_restart(clock);
         }
     }
