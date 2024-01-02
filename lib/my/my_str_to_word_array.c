@@ -53,20 +53,6 @@ int get_nb_of_words(char const *str)
     return words;
 }
 
-static
-char *get_word_adr(char const *str)
-{
-    char *adr = NULL;
-
-    for (int i = 0; str[i] != '\0'; i += 1) {
-        if (my_isalphanum(str[i])) {
-            adr = (char *)&str[i];
-            return adr;
-        }
-    }
-    return 0;
-}
-
 char **my_str_to_word_array(char *tab)
 {
     int number_of_words = get_nb_of_words(tab);
@@ -75,7 +61,8 @@ char **my_str_to_word_array(char *tab)
 
     for (int i = 0; i < number_of_words; i += 1) {
         ptr_to_return[i] = malloc(sizeof(char) * (get_word_length(arr) + 1));
-        ptr_to_return[i] = get_word_adr(arr);
+        for (int j = 0; j < get_word_length(arr) + 1; j += 1)
+            ptr_to_return[i][j] = arr[j];
         ptr_to_return[i][get_word_length(arr)] = '\0';
         arr += get_word_length(ptr_to_return[i]) + 1;
     }

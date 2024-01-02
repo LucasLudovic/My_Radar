@@ -14,6 +14,20 @@
 #include "load_entities.h"
 
 static
+void destroy_array_of_words(char **array)
+{
+    int cpt = 0;
+
+    if (array == NULL)
+        return;
+    while (array[cpt] != NULL) {
+        free(array[cpt]);
+        cpt += 1;
+    }
+    free(array);
+}
+
+static
 int add_to_tower(tower_t *tower, char **array, int tower_added)
 {
     for (int i = 0; i < DATA_TOWER; i += 1)
@@ -28,8 +42,9 @@ int add_to_tower(tower_t *tower, char **array, int tower_added)
     tower[tower_added].radius /= 100.f;
     if (my_getnbr(array[1]) > WIDTH || my_getnbr(array[1]) < 0 ||
         my_getnbr(array[2]) > HEIGHT || my_getnbr(array[2]) < 0 ||
-        my_getnbr(array[3]) > 100 || my_getnbr(array[3]) < 0)
+        my_getnbr(array[3]) > 100 || my_getnbr(array[3]) < 0) {
         return FAILURE;
+    }
     return SUCCESS;
 }
 
@@ -48,6 +63,7 @@ int add_single_tower(manager_t *manager, tower_t *tower, char *buff)
     if (array_of_words == NULL || *array_of_words == NULL)
         return FAILURE;
     return_value = add_to_tower(tower, array_of_words, tower_added);
+    destroy_array_of_words(array_of_words);
     tower_added += 1;
     return return_value;
 }
@@ -100,6 +116,7 @@ int add_single_plane(manager_t *manager, aircraft_t *aircraft, char *buff)
     if (array_of_words == NULL || *array_of_words == NULL)
         return FAILURE;
     return_value = add_to_plane(aircraft, array_of_words, plane_added);
+    destroy_array_of_words(array_of_words);
     plane_added += 1;
     return return_value;
 }
@@ -129,7 +146,7 @@ int check_entities(char *buff, manager_t *manager, aircraft_t *aircraft,
         if (add_single_plane(manager, aircraft, buff) == FAILURE)
             return display_error("Wrong value in file (plane)\n");
     if (buff[0] == 'T')
-        if (add_single_tower(manager, tower, buff))
+        if (add_single_tower(manager, tower, buff) == FAILURE)
             return display_error("Wrong value in file (tower)\n");
     return SUCCESS;
 }
@@ -172,7 +189,5 @@ int check_nb_assets(manager_t *manager, char *buff, FILE *file)
         if (buff[0] != 'A' && buff[0] != 'T')
             return FAILURE;
     }
-    if (buff != NULL)
-        free(buff);
     return SUCCESS;
 }

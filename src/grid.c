@@ -76,6 +76,7 @@ void add_plane_to_grid(manager_t *manager, aircraft_t *aircraft)
         return;
     tmp = my_memcpy(tmp, cell->aircraft,
         sizeof(aircraft_t *) * cell->nb_planes);
-    free(cell->aircraft);
+    if (cell->aircraft != NULL)
+        free(cell->aircraft);
     cell->aircraft = tmp;
 }
