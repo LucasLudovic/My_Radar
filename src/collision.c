@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "my_macros.h"
 #include "my_structs.h"
 #include "my.h"
@@ -68,45 +69,21 @@ void collide_with_sides(manager_t *manager, aircraft_t *plane, int i, int j)
 }
 
 static
-int check_radius_before(tower_t *tower, aircraft_t *aircraft, int i)
-{
-    if (tower[i].x_position >= aircraft->x_current &&
-        tower[i].x_position - tower[i].radius <= aircraft->x_current) {
-        if (tower[i].y_position >= aircraft->y_current &&
-            tower[i].y_position - tower[i].radius <= aircraft->y_current)
-            return TRUE;
-        if (tower[i].y_position <= aircraft->y_current &&
-            tower[i].y_position + tower[i].radius >= aircraft->y_current)
-            return TRUE;
-    }
-    return FALSE;
-}
-
-static
-int check_radius_after(tower_t *tower, aircraft_t *aircraft, int i)
-{
-    if (tower[i].x_position <= aircraft->x_current &&
-        tower[i].x_position + tower[i].radius >= aircraft->x_current) {
-        if (tower[i].y_position >= aircraft->y_current &&
-            tower[i].y_position - tower[i].radius <= aircraft->y_current)
-            return TRUE;
-        if (tower[i].y_position <= aircraft->y_current &&
-            tower[i].y_position + tower[i].radius >= aircraft->y_current)
-            return TRUE;
-    }
-    return FALSE;
-}
-
-static
 int check_tower(manager_t *manager, tower_t *tower, aircraft_t *aircraft)
 {
+    float dx = 0.f;
+    float dy = 0.f;
+    float dist = 0.f;
+
     for (int i = 0; i < manager->nb_towers; i += 1) {
         if (tower == NULL || aircraft == NULL)
             return FALSE;
-        if (check_radius_before(tower, aircraft, i) == TRUE)
+        dx = tower[i].x_position - aircraft->x_current;
+        dy = tower[i].y_position - aircraft->y_current;
+        dist = sqrtf(dx * dx + dy * dy);
+        if (dist <= tower[i].radius + SPRITE_SIZE) {
             return TRUE;
-        if (check_radius_after(tower, aircraft, i) == TRUE)
-            return TRUE;
+        }
     }
     return FALSE;
 }

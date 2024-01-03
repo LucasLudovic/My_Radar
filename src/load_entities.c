@@ -192,5 +192,7 @@ int add_planes_towers(manager_t *manager, const char *path,
     }
     if (buff != NULL)
         free(buff);
+    if (file != NULL)
+        fclose(file);
     return SUCCESS;
 }
