@@ -99,13 +99,14 @@ char *convert_time_to_text(manager_t *manager, char *timer_str)
 }
 
 static
-void draw_timer(manager_t *manager, sfText *time_text, sfFont *font,
-    char *timer_str)
+void draw_ath_element(sfText *time_text, sfFont *font,
+    char *timer_str, sfVector2i position)
 {
+    sfVector2f position_float = { (float)position.x, (float)position.y };
+
+    sfText_setPosition(time_text, position_float);
     sfText_setFont(time_text, font);
     sfText_setString(time_text, timer_str);
-    sfRenderWindow_drawText(manager->window, time_text, NULL);
-    sfRenderWindow_display(manager->window);
 }
 
 static
@@ -121,11 +122,11 @@ void display_timer(manager_t *manager, sfFont *font)
         return;
     timer_str = convert_time_to_text(manager, timer_str);
     if (timer_str == NULL) {
-        sfFont_destroy(font);
         sfText_destroy(time_text);
         return;
     }
-    draw_timer(manager, time_text, font, timer_str);
+    draw_ath_element(time_text, font, timer_str, (sfVector2i){X_TIMER, 0});
+    sfRenderWindow_drawText(manager->window, time_text, NULL);
     if (timer_str != NULL)
         free(timer_str);
     if (time_text != NULL)
@@ -133,12 +134,27 @@ void display_timer(manager_t *manager, sfFont *font)
 }
 
 static
-void display_framerate(sfClock *clock)
+void display_framerate(manager_t *manager, sfClock *clock, sfFont *font)
 {
     sfText *frame_text = NULL;
     float fps = 0;
+    char *frame_str = NULL;
 
+    if (font == NULL)
+        return;
+    frame_text = sfText_create();
+    if (frame_text == NULL)
+        return;
     fps = 1 / (sfTime_asSeconds(sfClock_getElapsedTime(clock)));
+    frame_str = my_nbr_to_str((int)fps);
+    if (frame_str == NULL) {
+        sfText_destroy(frame_text);
+        return;
+    }
+    draw_ath_element(frame_text, font, frame_str, (sfVector2i){ 0, 0 });
+    sfRenderWindow_drawText(manager->window, frame_text, NULL);
+    free(frame_str);
+    sfText_destroy(frame_text);
 }
 
 void display_ath(manager_t *manager, sfClock *clock)
@@ -146,7 +162,8 @@ void display_ath(manager_t *manager, sfClock *clock)
     sfFont *font = sfFont_createFromFile(FONT);
 
     display_timer(manager, font);
-    display_framerate(clock);
+    if (clock != NULL)
+        display_framerate(manager, clock, font);
     if (font != NULL)
         sfFont_destroy(font);
 }

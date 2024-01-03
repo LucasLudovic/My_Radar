@@ -32,4 +32,5 @@
     #define FALSE 0
     #define GRID_WIDTH (WIDTH / SPRITE_SIZE)
     #define GRID_HEIGHT (HEIGHT / SPRITE_SIZE)
+    #define X_TIMER (WIDTH - 200)
 #endif

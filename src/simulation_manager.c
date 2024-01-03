@@ -141,6 +141,7 @@ void update_frame(manager_t *manager, aircraft_t *aircraft, tower_t *tower,
         if (sfTime_asMilliseconds(time) >= TIME_FRAME_MS) {
             simulate(manager, aircraft, tower, &alive);
             display_ath(manager, clock);
+            sfRenderWindow_display(manager->window);
             time = sfClock_getElapsedTime(clock);
             manager->timer.microseconds += time.microseconds;
             sfClock_restart(clock);
