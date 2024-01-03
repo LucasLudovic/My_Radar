@@ -10,5 +10,6 @@
     #include "my_structs.h"
 
 int display_background(manager_t *manager);
+void display_timer(manager_t *manager);
 
 #endif

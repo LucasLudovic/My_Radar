@@ -43,5 +43,6 @@ int my_show_word_array(char const **tab);
 char **my_str_to_word_array(char const *str);
 char *my_strdup(char const *src);
 int display_error(char *error);
+char *my_nbr_to_str(int number);
 
 #endif

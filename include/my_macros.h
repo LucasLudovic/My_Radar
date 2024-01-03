@@ -11,6 +11,8 @@
     #define WIDTH 1980
     #define HEIGHT 1080
     #define BPP 32
+    #define CHARACTER_TIME 9
+    #define FONT "Ressources/arial.ttf"
     #define TITLE "Radar"
     #define PLANE "Ressources/Plane.png"
     #define TOWER "Ressources/Tower.png"

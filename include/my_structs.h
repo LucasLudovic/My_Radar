@@ -45,6 +45,7 @@ typedef struct manager_s {
     sfSprite *background_sprite;
     sfRectangleShape *hitbox;
     sfCircleShape *tower_radius;
+    sfTime timer;
     sfEvent event;
     int display_area;
     int display_sprite;
@@ -52,5 +53,14 @@ typedef struct manager_s {
     int nb_towers;
     grid_t **grid;
 } manager_t;
+
+typedef struct sim_timer_s {
+    int hours;
+    int minutes;
+    int seconds;
+    char *hours_str;
+    char *minutes_str;
+    char *seconds_str;
+} sim_timer_t;
 
 #endif

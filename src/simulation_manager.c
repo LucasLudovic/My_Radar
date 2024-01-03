@@ -96,8 +96,7 @@ int initialize_manager(manager_t *sim_manager)
     sfVideoMode mode = { WIDTH, HEIGHT, BPP };
 
     sim_manager->window = sfRenderWindow_create(mode, TITLE, sfClose, NULL);
-    sim_manager->nb_planes = 0;
-    sim_manager->nb_towers = 0;
+    sim_manager->timer.microseconds = 0;
     sim_manager->plane_texture = sfTexture_createFromFile(PLANE, NULL);
     sim_manager->tower_texture = sfTexture_createFromFile(TOWER, NULL);
     sim_manager->background_texture = sfTexture_createFromFile(BACK, NULL);
@@ -125,7 +124,27 @@ void simulate(manager_t *manager, aircraft_t *aircraft, tower_t *tower,
     if (*displayed != 0) {
         display_tower(manager, tower);
         check_collision(manager, tower);
-        sfRenderWindow_display(manager->window);
+    }
+}
+
+static
+void update_fram(manager_t *manager, aircraft_t *aircraft, tower_t *tower,
+    sfClock *clock)
+{
+    sfTime time;
+    int alive = 1;
+
+    while (sfRenderWindow_isOpen(manager->window) && alive != 0) {
+        time = sfClock_getElapsedTime(clock);
+        if (sfRenderWindow_pollEvent(manager->window, &(manager->event)))
+            check_events(manager);
+        if (sfTime_asMilliseconds(time) >= TIME_FRAME_MS) {
+            simulate(manager, aircraft, tower, &alive);
+            time = sfClock_getElapsedTime(clock);
+            manager->timer.microseconds += time.microseconds;
+            display_timer(manager);
+            sfClock_restart(clock);
+        }
     }
 }
 
@@ -133,21 +152,11 @@ static
 int simulation_loop(manager_t *manager, aircraft_t *aircraft, tower_t *tower)
 {
     sfClock *clock = sfClock_create();
-    sfTime time;
-    int alive = 1;
 
     if (clock == NULL)
         return FAILURE;
     sfRenderWindow_display(manager->window);
-    while (sfRenderWindow_isOpen(manager->window) && alive != 0) {
-        time = sfClock_getElapsedTime(clock);
-        if (sfRenderWindow_pollEvent(manager->window, &(manager->event)))
-            check_events(manager);
-        if (sfTime_asMilliseconds(time) >= TIME_FRAME_MS) {
-            simulate(manager, aircraft, tower, &alive);
-            sfClock_restart(clock);
-        }
-    }
+    update_fram(manager, aircraft, tower, clock);
     if (clock != NULL)
         sfClock_destroy(clock);
     return SUCCESS;
@@ -160,7 +169,7 @@ int my_radar(const char *path)
         .tower_texture = NULL, .plane_sprite = NULL, .tower_sprite = NULL,
         .background_texture = NULL, .background_sprite = NULL, .hitbox = NULL,
         .tower_radius = NULL, .display_area = TRUE, .display_sprite = TRUE,
-        .grid = NULL };
+        .grid = NULL, .nb_planes = 0, .nb_towers = 0 };
     aircraft_t *aircraft = NULL;
     tower_t *tower = NULL;
 
