@@ -19,7 +19,7 @@ OBJ	=	$(SRC:.c=.o)
 
 NAME	=	my_radar
 
-CC	=	gcc
+CC	=	gcc -g
 
 CFLAGS	=	-I include
 CFLAGS	+=	-lcsfml-graphics

@@ -18,6 +18,8 @@ void collide_single_plane(aircraft_t *plane_to_collide, aircraft_t *plane)
     int x_collide = 0;
     int y_collide = 0;
 
+    if (plane_to_collide == NULL || plane == NULL)
+        return;
     x_collide = (int)plane_to_collide->x_current;
     y_collide = (int)plane_to_collide->y_current;
     if (abs((int)plane->x_current - x_collide) <= SPRITE_SIZE &&
@@ -35,7 +37,12 @@ void check_side(manager_t *manager, aircraft_t *plane, int i, int j)
     aircraft_t *plane_to_collide = NULL;
     int plane_to_collide_with = 0;
 
+    if (manager == NULL || manager->grid == NULL || i >= GRID_HEIGHT ||
+        j >= GRID_WIDTH || i < 0 || j < 0 || manager->grid[i] == NULL)
+        return;
     cell_top = &manager->grid[i][j];
+    if (cell_top == NULL)
+        return;
     while (plane_to_collide_with < cell_top->nb_planes) {
         plane_to_collide = cell_top->aircraft[plane_to_collide_with];
         if (plane_to_collide == plane) {
@@ -50,6 +57,8 @@ void check_side(manager_t *manager, aircraft_t *plane, int i, int j)
 static
 void collide_with_sides(manager_t *manager, aircraft_t *plane, int i, int j)
 {
+    if (manager == NULL || plane == NULL)
+        return;
     if (i > 0)
         check_side(manager, plane, i - 1, j);
     if (i > 0 && j > 0)
@@ -94,6 +103,9 @@ void check_single_case(manager_t *manager, tower_t *tower, int i, int j)
     int plane_check = 0;
     grid_t *cell = NULL;
 
+    if (manager == NULL || manager->grid == NULL || i >= GRID_HEIGHT ||
+        j >= GRID_WIDTH || i < 0 || j < 0 || manager->grid[i] == NULL)
+        return;
     cell = &manager->grid[i][j];
     while (plane_check < cell->nb_planes) {
         if (cell->aircraft[plane_check]->arrived == TRUE ||

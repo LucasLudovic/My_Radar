@@ -99,6 +99,8 @@ int display_plane(manager_t *manager, aircraft_t *aircraft)
 
     destroy_grid(manager);
     initialize_grid(manager);
+    if (manager->grid == NULL)
+        return alive;
     for (int i = 0; i < manager->nb_planes; i += 1) {
         if (aircraft[i].destroyed == TRUE || aircraft[i].arrived == TRUE)
             continue;
