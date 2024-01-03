@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "my.h"
 #include "my_macros.h"
 #include "my_structs.h"
@@ -83,7 +84,7 @@ char *convert_time_to_text(manager_t *manager, char *timer_str)
     if (timer_str == NULL)
         return NULL;
     sim_timer.seconds = (int)sfTime_asSeconds(manager->timer) % 60;
-    sim_timer.minutes = (int)(sfTime_asSeconds(manager->timer) / 60);
+    sim_timer.minutes = (int)(sfTime_asSeconds(manager->timer) / 60) % 60;
     sim_timer.hours = (int)(sfTime_asSeconds(manager->timer) / 3600);
     if (sim_timer.hours > 99)
         sim_timer.hours = 0;
@@ -108,29 +109,16 @@ void draw_timer(manager_t *manager, sfText *time_text, sfFont *font,
 }
 
 static
-void destroy_text_timer(sfText *time_text, sfFont *font, char *timer_str)
-{
-    if (timer_str != NULL)
-        free(timer_str);
-    if (time_text != NULL)
-        sfText_destroy(time_text);
-    if (font != NULL)
-        sfFont_destroy(font);
-}
-
-void display_timer(manager_t *manager)
+void display_timer(manager_t *manager, sfFont *font)
 {
     sfText *time_text = NULL;
-    sfFont *font = sfFont_createFromFile(FONT);
     char *timer_str = NULL;
 
     if (font == NULL)
         return;
     time_text = sfText_create();
-    if (time_text == NULL) {
-        sfFont_destroy(font);
+    if (time_text == NULL)
         return;
-    }
     timer_str = convert_time_to_text(manager, timer_str);
     if (timer_str == NULL) {
         sfFont_destroy(font);
@@ -138,5 +126,27 @@ void display_timer(manager_t *manager)
         return;
     }
     draw_timer(manager, time_text, font, timer_str);
-    destroy_text_timer(time_text, font, timer_str);
+    if (timer_str != NULL)
+        free(timer_str);
+    if (time_text != NULL)
+        sfText_destroy(time_text);
+}
+
+static
+void display_framerate(sfClock *clock)
+{
+    sfText *frame_text = NULL;
+    float fps = 0;
+
+    fps = 1 / (sfTime_asSeconds(sfClock_getElapsedTime(clock)));
+}
+
+void display_ath(manager_t *manager, sfClock *clock)
+{
+    sfFont *font = sfFont_createFromFile(FONT);
+
+    display_timer(manager, font);
+    display_framerate(clock);
+    if (font != NULL)
+        sfFont_destroy(font);
 }

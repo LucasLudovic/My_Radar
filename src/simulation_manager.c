@@ -128,7 +128,7 @@ void simulate(manager_t *manager, aircraft_t *aircraft, tower_t *tower,
 }
 
 static
-void update_fram(manager_t *manager, aircraft_t *aircraft, tower_t *tower,
+void update_frame(manager_t *manager, aircraft_t *aircraft, tower_t *tower,
     sfClock *clock)
 {
     sfTime time;
@@ -140,9 +140,9 @@ void update_fram(manager_t *manager, aircraft_t *aircraft, tower_t *tower,
             check_events(manager);
         if (sfTime_asMilliseconds(time) >= TIME_FRAME_MS) {
             simulate(manager, aircraft, tower, &alive);
+            display_ath(manager, clock);
             time = sfClock_getElapsedTime(clock);
             manager->timer.microseconds += time.microseconds;
-            display_timer(manager);
             sfClock_restart(clock);
         }
     }
@@ -156,7 +156,7 @@ int simulation_loop(manager_t *manager, aircraft_t *aircraft, tower_t *tower)
     if (clock == NULL)
         return FAILURE;
     sfRenderWindow_display(manager->window);
-    update_fram(manager, aircraft, tower, clock);
+    update_frame(manager, aircraft, tower, clock);
     if (clock != NULL)
         sfClock_destroy(clock);
     return SUCCESS;

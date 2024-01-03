@@ -19,7 +19,7 @@
     #define BACK "Ressources/Background.jpg"
     #define FAILURE 84
     #define SUCCESS 0
-    #define FRAME 60
+    #define FRAME 30
     #define DATA_PLANE 7
     #define DATA_TOWER 4
     #define SPRITE_SIZE 20
