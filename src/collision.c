@@ -90,7 +90,7 @@ int check_tower(manager_t *manager, tower_t *tower, aircraft_t *aircraft)
         dx = tower[i].x_position - aircraft->x_current;
         dy = tower[i].y_position - aircraft->y_current;
         dist = sqrtf(dx * dx + dy * dy);
-        if (dist <= tower[i].radius + SPRITE_SIZE) {
+        if (dist <= tower[i].radius) {
             return TRUE;
         }
     }
