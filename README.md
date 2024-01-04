@@ -20,8 +20,8 @@ The My Radar project simulates a 2D air traffic control system, showcasing the d
    Replace `path_to_script` with the path to your custom simulation script.
 
 2. **User Interactions:**
-   - `'L' key:** Toggle visibility of hitboxes and control areas.
-   - `'S' key:** Toggle visibility of sprites.
+   - **'L' key:** Toggle visibility of hitboxes and control areas.
+   - **'S' key:** Toggle visibility of sprites.
 
 ### Script Format
 
