@@ -18,6 +18,7 @@ typedef struct aircraft_s {
     float y_arrival;
     float speed;
     float delay;
+    float rotation;
     int destroyed;
     int arrived;
 }aircraft_t;

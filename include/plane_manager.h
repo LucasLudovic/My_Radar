@@ -10,7 +10,6 @@
     #include "my_structs.h"
     #include "my_macros.h"
 
-int move_plane(aircraft_t *aircraft);
 int display_plane(manager_t *manager, aircraft_t *aircraft);
 
 #endif

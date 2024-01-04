@@ -82,6 +82,10 @@ void check_position(int *x, int *y)
         *x = GRID_WIDTH - 1;
     if (*y >= GRID_HEIGHT)
         *y = GRID_HEIGHT - 1;
+    if (*x < 0)
+        *x = 0;
+    if (*y < 0)
+        *y = 0;
 }
 
 static
