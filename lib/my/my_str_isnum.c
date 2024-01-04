@@ -10,7 +10,7 @@ int my_str_isnum(char const *str)
     int condition1 = 0;
 
     for (int i = 0; str[i] != '\0'; i += 1) {
-        condition1 = str[i] < 48 || str[i] > 57;
+        condition1 = str[i] < '0' || str[i] > '9';
         if (condition1)
             return 0;
     }

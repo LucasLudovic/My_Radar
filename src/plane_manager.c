@@ -25,42 +25,32 @@ void move_x(manager_t *manager, aircraft_t *aircraft, float delta_x,
     else
         speed_x = speed_x * TIME_FRAME_MS / SECOND_IN_MS;
     aircraft->x_current += speed_x;
-    if (aircraft->x_departure < aircraft->x_arrival) {
-        if (aircraft->x_current < aircraft->x_arrival)
+    if (aircraft->x_departure <= aircraft->x_arrival) {
+        if (aircraft->x_current <= aircraft->x_arrival)
             return;
-        aircraft->arrived = TRUE;
+        aircraft->arrived_x = TRUE;
         return;
     }
-    if (aircraft->x_departure > aircraft->x_arrival) {
-        if (aircraft->x_current > aircraft->x_arrival)
+    if (aircraft->x_departure >= aircraft->x_arrival) {
+        if (aircraft->x_current >= aircraft->x_arrival)
             return;
-        aircraft->arrived = TRUE;
+        aircraft->arrived_x = TRUE;
         return;
     }
 }
 
 static
-int check_arrived(aircraft_t *aircraft)
+void check_arrived(aircraft_t *aircraft)
 {
-    if (aircraft->y_departure < aircraft->y_arrival &&
-        aircraft->arrived == TRUE) {
-        if (aircraft->y_current < aircraft->y_arrival) {
-            aircraft->arrived = FALSE;
-            return FAILURE;
-        }
-        aircraft->arrived = TRUE;
-        return SUCCESS;
+    if (aircraft->y_departure < aircraft->y_arrival) {
+        if (aircraft->y_current > aircraft->y_arrival)
+            aircraft->arrived_y = TRUE;
+        return;
     }
-    if (aircraft->y_departure > aircraft->y_arrival &&
-    aircraft->arrived == TRUE) {
-        if (aircraft->y_current > aircraft->y_arrival) {
-            aircraft->arrived = FALSE;
-            return FAILURE;
-        }
-        aircraft->arrived = TRUE;
-        return SUCCESS;
+    if (aircraft->y_departure > aircraft->y_arrival) {
+        if (aircraft->y_current < aircraft->y_arrival)
+            aircraft->arrived_y = TRUE;
     }
-    return FAILURE;
 }
 
 static
@@ -74,9 +64,7 @@ void move_y(manager_t *manager, aircraft_t *aircraft, float delta_y,
     else
         speed_y = speed_y * TIME_FRAME_MS / SECOND_IN_MS;
     aircraft->y_current += speed_y;
-    if (check_arrived(aircraft) == SUCCESS)
-        return;
-    aircraft->arrived = FALSE;
+    check_arrived(aircraft);
 }
 
 static
@@ -92,6 +80,8 @@ int move_plane(manager_t *manager, aircraft_t *aircraft)
         return FAILURE;
     move_x(manager, aircraft, delta_x, dist);
     move_y(manager, aircraft, delta_y, dist);
+    if (aircraft->arrived_x == TRUE && aircraft->arrived_y == TRUE)
+        aircraft->arrived = TRUE;
     angle_radian = (float)atan2((int)delta_y, (int)delta_x);
     angle_degree = angle_radian * 180.f / 3.14f;
     aircraft->rotation = angle_degree;

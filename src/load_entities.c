@@ -33,6 +33,9 @@ int add_to_tower(tower_t *tower, char **array, int tower_added)
     for (int i = 0; i < DATA_TOWER; i += 1)
         if (array[i] == NULL)
             return FAILURE;
+    for (int i = 1; i < DATA_TOWER; i += 1)
+        if (my_str_isnum(array[i]) == 0)
+            return FAILURE;
     if (array[DATA_TOWER] != NULL)
         return FAILURE;
     tower[tower_added].x_position = (float)my_getnbr(array[1]);
@@ -77,6 +80,12 @@ void add_positions(aircraft_t *aircraft, char **array, int plane_added)
     aircraft[plane_added].y_current = aircraft[plane_added].y_departure;
     aircraft[plane_added].x_arrival = (float)my_getnbr(array[3]);
     aircraft[plane_added].y_arrival = (float)my_getnbr(array[4]);
+    if (aircraft[plane_added].x_departure == aircraft[plane_added].x_arrival)
+        aircraft[plane_added].x_arrival = TRUE;
+    if (aircraft[plane_added].y_departure == aircraft[plane_added].y_arrival)
+        aircraft[plane_added].y_arrival = TRUE;
+    aircraft[plane_added].speed = (float)my_getnbr(array[5]);
+    aircraft[plane_added].delay = (float)my_getnbr(array[6]);
 }
 
 static
@@ -85,13 +94,16 @@ int add_to_plane(aircraft_t *aircraft, char **array, int plane_added)
     for (int i = 0; i < DATA_PLANE; i += 1)
         if (array[i] == NULL)
             return FAILURE;
+    for (int i = 1; i < DATA_PLANE; i += 1)
+        if (my_str_isnum(array[i]) == 0)
+            return FAILURE;
     if (array[DATA_PLANE] != NULL)
         return FAILURE;
     add_positions(aircraft, array, plane_added);
-    aircraft[plane_added].speed = (float)my_getnbr(array[5]);
-    aircraft[plane_added].delay = (float)my_getnbr(array[6]);
-    aircraft[plane_added].arrived = FALSE;
+    aircraft[plane_added].arrived_x = FALSE;
+    aircraft[plane_added].arrived_y = FALSE;
     aircraft[plane_added].destroyed = FALSE;
+    aircraft[plane_added].arrived = FALSE;
     if (aircraft[plane_added].x_departure > WIDTH ||
         aircraft[plane_added].x_arrival > WIDTH ||
         aircraft[plane_added].y_departure > HEIGHT ||

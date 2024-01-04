@@ -27,7 +27,7 @@ int get_word_length(char const *str)
     int j = 0;
 
     while (1) {
-        while (my_isalphanum(str[j])) {
+        while (str[j] != ' ' && str[j] != '\n' && str[j] != '\0') {
             i += 1;
             j += 1;
         }
@@ -54,13 +54,28 @@ int get_nb_of_words(char const *str)
 }
 
 static
-void divide_into_array(char **ptr_to_return, char *arr, int number_of_words)
+int go_to_word(char **arr)
+{
+    int nb_spaces = 0;
+
+    while (**arr == ' ') {
+        if (nb_spaces > 0)
+            return 84;
+        nb_spaces += 1;
+        *arr += 1;
+    }
+    return 0;
+}
+
+static
+int divide_into_array(char **ptr_to_return, char *arr, int number_of_words)
 {
     int word_length = 0;
+    int nb_spaces = 0;
 
     for (int i = 0; i < number_of_words; i += 1) {
-        while (my_isalphanum(*arr) != 1)
-            arr += 1;
+        if (go_to_word(&arr) == 84)
+            return 84;
         word_length = get_word_length(arr);
         ptr_to_return[i] = malloc(sizeof(char) * (word_length + 1));
         for (int j = 0; j < word_length; j += 1)
@@ -68,6 +83,7 @@ void divide_into_array(char **ptr_to_return, char *arr, int number_of_words)
         ptr_to_return[i][word_length] = '\0';
         arr += word_length;
     }
+    return 0;
 }
 
 char **my_str_to_word_array(char *tab)
@@ -82,7 +98,8 @@ char **my_str_to_word_array(char *tab)
         free(ptr_to_return);
         return NULL;
     }
-    divide_into_array(ptr_to_return, arr, number_of_words);
+    if (divide_into_array(ptr_to_return, arr, number_of_words) == 84)
+        return NULL;
     ptr_to_return[number_of_words] = NULL;
     return ptr_to_return;
 }
