@@ -170,7 +170,7 @@ int my_radar(const char *path)
         .tower_texture = NULL, .plane_sprite = NULL, .tower_sprite = NULL,
         .background_texture = NULL, .background_sprite = NULL, .hitbox = NULL,
         .tower_radius = NULL, .display_area = TRUE, .display_sprite = TRUE,
-        .grid = NULL, .nb_planes = 0, .nb_towers = 0 };
+        .grid = NULL, .nb_planes = 0, .nb_towers = 0, .fps = 0.f };
     aircraft_t *aircraft = NULL;
     tower_t *tower = NULL;
 

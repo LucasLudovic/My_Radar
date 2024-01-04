@@ -97,14 +97,14 @@ int display_plane(manager_t *manager, aircraft_t *aircraft)
     sfVector2f plane_position = { .x = 0, .y = 0 };
     int alive = 0;
 
-    destroy_grid(manager);
-    initialize_grid(manager);
-    if (manager->grid == NULL)
+    if (destroy_grid(manager) == NULL || initialize_grid(manager) == NULL)
         return alive;
     for (int i = 0; i < manager->nb_planes; i += 1) {
         if (aircraft[i].destroyed == TRUE || aircraft[i].arrived == TRUE)
             continue;
         alive += 1;
+        if (aircraft[i].delay > sfTime_asSeconds(manager->timer))
+            continue;
         move_plane(&aircraft[i]);
         plane_position.x = aircraft[i].x_current;
         plane_position.y = aircraft[i].y_current;

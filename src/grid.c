@@ -34,10 +34,10 @@ void destroy_grid_aircraft(manager_t *manager, int i)
     }
 }
 
-void destroy_grid(manager_t *manager)
+grid_t **destroy_grid(manager_t *manager)
 {
     if (manager == NULL || manager->grid == NULL)
-        return;
+        return manager->grid;
     for (int i = 0; i < GRID_HEIGHT; i += 1) {
         if (manager->grid[i] == NULL)
             continue;
@@ -45,6 +45,7 @@ void destroy_grid(manager_t *manager)
         free(manager->grid[i]);
     }
     free(manager->grid);
+    return manager->grid;
 }
 
 static
@@ -62,6 +63,8 @@ int alloc_plane_grid(manager_t *manager, int i)
 grid_t **initialize_grid(manager_t *manager)
 {
     manager->grid = malloc(sizeof(grid_t *) * GRID_HEIGHT);
+    if (manager->grid == NULL)
+        return NULL;
     for (int i = 0; i < GRID_HEIGHT; i += 1) {
         manager->grid[i] = malloc(sizeof(grid_t) * GRID_WIDTH);
         if (manager->grid[i] == NULL)

@@ -137,7 +137,6 @@ static
 void display_framerate(manager_t *manager, sfClock *clock, sfFont *font)
 {
     sfText *frame_text = NULL;
-    float fps = 0;
     char *frame_str = NULL;
 
     if (font == NULL)
@@ -145,8 +144,8 @@ void display_framerate(manager_t *manager, sfClock *clock, sfFont *font)
     frame_text = sfText_create();
     if (frame_text == NULL)
         return;
-    fps = 1 / (sfTime_asSeconds(sfClock_getElapsedTime(clock)));
-    frame_str = my_nbr_to_str((int)fps);
+    manager->fps = 1 / (sfTime_asSeconds(sfClock_getElapsedTime(clock)));
+    frame_str = my_nbr_to_str((int)manager->fps);
     if (frame_str == NULL) {
         sfText_destroy(frame_text);
         return;

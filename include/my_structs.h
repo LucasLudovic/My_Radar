@@ -47,6 +47,7 @@ typedef struct manager_s {
     sfCircleShape *tower_radius;
     sfTime timer;
     sfEvent event;
+    float fps;
     int display_area;
     int display_sprite;
     int nb_planes;
