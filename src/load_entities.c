@@ -145,7 +145,7 @@ int check_nb_assets(manager_t *manager, char *buff, FILE *file)
             manager->nb_planes += 1;
         if (buff[0] == 'T')
             manager->nb_towers += 1;
-        if (buff[0] != 'A' && buff[0] != 'T')
+        if ((buff[0] != 'A' && buff[0] != 'T') || buff[1] != ' ')
             return FAILURE;
     }
     if (buff != NULL) {
