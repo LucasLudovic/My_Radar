@@ -17,7 +17,7 @@ int display_help(void)
 {
     my_putstr("Air traffic simulation panel\n");
     my_putstr("USAGE\n");
-    my_putstr("\t./my_radar [OPTIONS] path_to_script\n");
+    my_putstr("\t./my_radar path_to_script\n");
     my_putstr("\tpath_to_script The path to the script file.\n");
     my_putstr("OPTIONS\n");
     my_putstr("\t-h print the usage and quit.\n");
