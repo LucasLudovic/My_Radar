@@ -59,20 +59,10 @@ void collide_with_sides(manager_t *manager, aircraft_t *plane, int i, int j)
 {
     if (manager == NULL || plane == NULL)
         return;
-    if (i > 0)
-        check_side(manager, plane, i - 1, j);
-    if (i > 0 && j > 0)
-        check_side(manager, plane, i - 1, j - 1);
-    if (i > 0 && j < GRID_WIDTH - 1)
-        check_side(manager, plane, i -1, j + 1);
     if (i < GRID_HEIGHT - 1)
         check_side(manager, plane, i + 1, j);
-    if (i < GRID_HEIGHT - 1 && j > 0)
-        check_side(manager, plane, i + 1, j - 1);
     if (i < GRID_HEIGHT- 1 && j < GRID_WIDTH - 1)
         check_side(manager, plane, i + 1, j + 1);
-    if (j > 0)
-        check_side(manager, plane, i, j - 1);
     if (j < GRID_WIDTH - 1)
         check_side(manager, plane, i, j + 1);
 }

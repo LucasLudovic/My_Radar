@@ -6,7 +6,9 @@
 */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <stddef.h>
+#include "my.h"
 
 static
 int my_isalphanum(char const str)
@@ -50,6 +52,8 @@ int get_nb_of_words(char const *str)
         if (!condition1 && condition2)
             words += 1;
     }
+    if (my_isalphanum(str[my_strlen(str) - 1]))
+        words += 1;
     return words;
 }
 
