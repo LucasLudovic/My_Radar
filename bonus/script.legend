@@ -1,0 +1,23 @@
+1. Aircraft Description
+   Format: A [Departure X] [Departure Y] [Arrival X] [Arrival Y] [Speed] [Delay]
+   - 'A': Indicates an aircraft.
+   - Departure X: X-coordinate of the departure point.
+   - Departure Y: Y-coordinate of the departure point.
+   - Arrival X: X-coordinate of the arrival point.
+   - Arrival Y: Y-coordinate of the arrival point.
+   - Speed: Aircraft's speed in pixels per second.
+   - Delay: Delay before the aircraft takes off, in seconds.
+
+2. Control Tower Description
+   Format: T [X-coordinate] [Y-coordinate] [Control Radius]
+   - 'T': Indicates a control tower.
+   - X-coordinate: X-coordinate of the control tower.
+   - Y-coordinate: Y-coordinate of the control tower.
+   - Control Radius: Radius of the tower's control area, as a percentage of the greatest side of the window in pixels.
+
+3. General Format
+   - Each entity (aircraft or control tower) is described on a separate line.
+   - Pieces of information for each entity are separated spaces.
+   - The file uses newline characters ('\n') to separate different entities.
+   - The X must be between 0 and 1980;
+   - The Y must be between 0 and 1080;
