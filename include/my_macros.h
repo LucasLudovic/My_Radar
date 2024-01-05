@@ -8,7 +8,7 @@
 #ifndef MY_MACROS_H_
     #define MY_MACROS_H_
     #define UNUSED __attribute__((unused))
-    #define WIDTH 1980
+    #define WIDTH 1920
     #define HEIGHT 1080
     #define BPP 32
     #define CHARACTER_TIME 9
